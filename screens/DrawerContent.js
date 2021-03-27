@@ -68,7 +68,7 @@ export function DrawerContent(props) {
                                 />
                             )}
                             label="DOCTORSINA"
-                            onPress={() => {props.navigation.navigate('Details')}}
+                            onPress={() => {props.navigation.navigate('DetailsScreen')}}
                         />
                         <DrawerItem
                             icon={({color, size}) => (
@@ -79,19 +79,9 @@ export function DrawerContent(props) {
                                 />
                             )}
                             label="Profile"
-                            onPress={() => {props.navigation.navigate('Profile')}}
+                            onPress={() => {props.navigation.navigate('ProfileScreen')}}
                         />
-                        <DrawerItem
-                            icon={({color, size}) => (
-                                <Icon
-                                name="ios-bookmark"
-                                color={color}
-                                size={size}
-                                />
-                            )}
-                            label="Bookmarks"
-                            onPress={() => {props.navigation.navigate('BookmarkScreen')}}
-                        />
+
                         <DrawerItem
                             icon={({color, size}) => (
                                 <Icon

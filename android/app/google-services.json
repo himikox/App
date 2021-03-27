@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1060583277364",
+    "project_id": "doctorsina-f6209",
+    "storage_bucket": "doctorsina-f6209.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1060583277364:android:dd72d179293054ea081b61",
+        "android_client_info": {
+          "package_name": "com.rnv5"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1060583277364-quo1b67cbu3j8e9ds589s8ndp5338loq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANVJzW_IfN40s_IWPJm-fec9mPXkvErYY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1060583277364-quo1b67cbu3j8e9ds589s8ndp5338loq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

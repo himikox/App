@@ -11,35 +11,41 @@ import {
     ScrollView,
     StatusBar, Alert,
 } from 'react-native';
+import validator from 'validator';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import Users from '../model/users';
+import auth from "@react-native-firebase/auth"
+import {AuthContext} from '../components/context';
 
 const SignInScreen = ({navigation}) => {
 
     const [data, setData] = React.useState({
-        username: '',
+        mail: '',
         password: '',
         confirm_password: '',
         check_textInputChange: false,
         secureTextEntry: true,
         confirm_secureTextEntry: true,
     });
-
+    const { signUp } = React.useContext(AuthContext);
     const textInputChange = (val) => {
-        if( val.length !== 0 ) {
+        if( val.trim().length >= 0 ) {
             setData({
                 ...data,
-                username: val,
-                check_textInputChange: true
+                mail: val,
+                check_textInputChange: true,
+                isValidUser: true
             });
         } else {
             setData({
                 ...data,
-                username: val,
-                check_textInputChange: false
+                mail: val,
+                check_textInputChange: false,
+                isValidUser: false
+
             });
         }
     }
@@ -65,18 +71,24 @@ const SignInScreen = ({navigation}) => {
         });
     }
     const handleValidUser = (val) => {
-        if( val.trim().length >= 4 ) {
+        if( validator.isEmail(val)) {
+            console.log("email valide");
             setData({
+
                 ...data,
                 isValidUser: true
             });
         } else {
+            console.log("emailpas valide");
+
+
             setData({
                 ...data,
                 isValidUser: false
             });
         }
     }
+
     const updateConfirmSecureTextEntry = () => {
         setData({
             ...data,
@@ -84,9 +96,40 @@ const SignInScreen = ({navigation}) => {
         });
     }
     const SignUpHandle = (userName, password) => {
+    console.log("signup");
+
+    }
+    const __doSignUp = async(data) => {
+        if(data.isValidUser)
+        { try {
+
+            let response = await auth().createUserWithEmailAndPassword(data.mail, data.password);
+
+            if (response && response.user) {
+                signUp(data.mail,'aa');
+                Alert.alert("Success ✅", "Authenticated successfully")
+            }
+        } catch (e) {
+            console.error(e.message)
+        }
+            console.log("done");
+          // __doCreateUser(data.mail,data.password);
+
+        }
+
 
 
     }
+    const __doCreateUser = async (email, password) => {
+        try {
+            let response = await auth().createUserWithEmailAndPassword(email, password)
+            signUp();
+        } catch (e) {
+            console.error(e.message)
+        }
+    }
+
+
     return (
       <View style={styles.container}>
           <StatusBar backgroundColor='#529ecf' barStyle="light-content"/>
@@ -98,7 +141,7 @@ const SignInScreen = ({navigation}) => {
             style={styles.footer}
         >
             <ScrollView>
-            <Text style={styles.text_footer}>Username</Text>
+            <Text style={styles.text_footer}>Mail</Text>
             <View style={styles.action}>
                 <FontAwesome
                     name="user-o"
@@ -106,7 +149,7 @@ const SignInScreen = ({navigation}) => {
                     size={20}
                 />
                 <TextInput
-                    placeholder="Your Username"
+                    placeholder="Your eMail"
                     style={styles.textInput}
                     autoCapitalize="none"
                     onChangeText={(val) => textInputChange(val)}
@@ -124,6 +167,11 @@ const SignInScreen = ({navigation}) => {
                 </Animatable.View>
                 : null}
             </View>
+                { data.isValidUser ? null :
+                    <Animatable.View animation="fadeInLeft" duration={500}>
+                        <Text style={styles.errorMsg}>EMail must be valid</Text>
+                    </Animatable.View>
+                }
 
             <Text style={[styles.text_footer, {
                 marginTop: 35
@@ -205,7 +253,7 @@ const SignInScreen = ({navigation}) => {
             <View style={styles.button}>
                 <TouchableOpacity
                     style={styles.signIn}
-                    onPress={() => {SignUpHandle( data.username, data.password )}}
+                    onPress={() => {__doSignUp ( data )}}
                 >
                 <LinearGradient
                     colors={['#529ecf', '#529ecf']}
@@ -301,5 +349,16 @@ const styles = StyleSheet.create({
     },
     color_textPrivate: {
         color: 'grey'
-    }
+    },
+    actionError: {
+        flexDirection: 'row',
+        marginTop: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#FF0000',
+        paddingBottom: 5
+    },
+    errorMsg: {
+        color: '#FF0000',
+        fontSize: 14,
+    },
   });

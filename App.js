@@ -14,7 +14,7 @@ import {
   DarkTheme as NavigationDarkTheme
 } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-
+import auth,{ firebase }  from "@react-native-firebase/auth"
 import {
   Provider as PaperProvider,
   DefaultTheme as PaperDefaultTheme,
@@ -22,6 +22,8 @@ import {
 } from 'react-native-paper';
 
 import { DrawerContent } from './screens/DrawerContent';
+import DetailsScreen from './screens/DetailsScreen';
+
 
 import MainTabScreen from './screens/MainTabScreen';
 import SupportScreen from './screens/SupportScreen';
@@ -33,16 +35,17 @@ import { AuthContext } from './components/context';
 import RootStackScreen from './screens/RootStackScreen';
 
 import AsyncStorage from '@react-native-community/async-storage';
-import HomeScreen from './screens/HomeScreen';
+import ProfileScreen from './screens/ProfileScreen';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {createStackNavigator} from '@react-navigation/stack';
-import ProfileScreen from './screens/ProfileScreen';
-import DetailsScreen from './screens/DetailsScreen';
-
-const Drawer = createDrawerNavigator();
+import HomeScreen from './screens/HomeScreen';
 const HomeStack = createStackNavigator();
 const DetailsStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
+const SettingsStack = createStackNavigator();
+
+const Drawer = createDrawerNavigator();
+
 const App = () => {
   // const [isLoading, setIsLoading] = React.useState(true);
   // const [userToken, setUserToken] = React.useState(null);
@@ -114,11 +117,11 @@ const App = () => {
   const [loginState, dispatch] = React.useReducer(loginReducer, initialLoginState);
 
   const authContext = React.useMemo(() => ({
-    signIn: async(foundUser) => {
+    signIn: async(username,usertoken) => {
       // setUserToken('fgkj');
       // setIsLoading(false);
-      const userToken = String(foundUser[0].userToken);
-      const userName = foundUser[0].username;
+      const userToken = String(usertoken);
+      const userName = username;
 
       try {
         await AsyncStorage.setItem('userToken', userToken);
@@ -138,12 +141,12 @@ const App = () => {
       }
       dispatch({ type: 'LOGOUT' });
     },
-
-    signUp: async(userName,password) => {
-
-      dispatch({ type: 'REGISTER',id:userName,token:userToken })
+    signUp: (username,usertoken) => {
       // setUserToken('fgkj');
       // setIsLoading(false);
+      const userToken = String(usertoken);
+      const userName = username;
+      dispatch({ type: 'REGISTER',id: username, token: userToken })
     },
     toggleTheme: () => {
       setIsDarkTheme( isDarkTheme => !isDarkTheme );
@@ -167,35 +170,51 @@ const App = () => {
 
   if( loginState.isLoading ) {
     return(
-      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-        <ActivityIndicator size="large"/>
-      </View>
+        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+          <ActivityIndicator size="large"/>
+        </View>
     );
   }
   return (
-    <PaperProvider theme={theme}>
-    <AuthContext.Provider value={authContext}>
-    <NavigationContainer theme={theme}>
-      { loginState.userToken !== null ? (
-        <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
-          <Drawer.Screen name="Home" component={HomeStackScreen} />
-          <Drawer.Screen name="Profile" component={ProfileStackScreen} />
-          <Drawer.Screen name="Details" component={DetailsStackScreen} />
-          <Drawer.Screen name="SupportScreen" component={SupportScreen} />
-          <Drawer.Screen name="SettingsScreen" component={SettingsScreen} />
-          <Drawer.Screen name="BookmarkScreen" component={BookmarkScreen} />
-        </Drawer.Navigator>
-      )
-    :
-      <RootStackScreen/>
-    }
-    </NavigationContainer>
-    </AuthContext.Provider>
-    </PaperProvider>
+      <PaperProvider theme={theme}>
+        <AuthContext.Provider value={authContext}>
+          <NavigationContainer theme={theme}>
+            { loginState.userToken !== null ? (
+                    <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
+                      <Drawer.Screen name="HomeDrawer" component={HomeStackScreen} />
+                      <Drawer.Screen name="ProfileScreen" component={ProfileStackScreen} />
+                      <Drawer.Screen name="DetailsScreen" component={DetailsStackScreen} />
+                      <Drawer.Screen name="SettingsScreen" component={SettingsStackScreen} />
+
+                    </Drawer.Navigator>
+                )
+                :
+                <RootStackScreen/>
+            }
+          </NavigationContainer>
+        </AuthContext.Provider>
+      </PaperProvider>
   );
 }
 
 export default App;
+const   ProfileStackScreen = ({navigation}) => (
+    <ProfileStack.Navigator screenOptions={{
+      headerStyle: {
+        backgroundColor: '#3b8abd',
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold'
+      }
+    }}>
+      <DetailsStack.Screen name="Profile" component={ProfileScreen} options={{
+        headerLeft: () => (
+            <Icon.Button name="ios-menu" size={25} backgroundColor="#529ecf" onPress={() => navigation.openDrawer()}></Icon.Button>
+        )
+      }} />
+    </ProfileStack.Navigator>
+);
 const HomeStackScreen = ({navigation}) => (
     <HomeStack.Navigator screenOptions={{
       headerStyle: {
@@ -214,25 +233,6 @@ const HomeStackScreen = ({navigation}) => (
       }} />
     </HomeStack.Navigator>
 );
-
-const   ProfileStackScreen = ({navigation}) => (
-    <ProfileStack.Navigator screenOptions={{
-      headerStyle: {
-        backgroundColor: '#3b8abd',
-      },
-      headerTintColor: '#fff',
-      headerTitleStyle: {
-        fontWeight: 'bold'
-      }
-    }}>
-      <ProfileStack.Screen name="Profile" component={ProfileScreen} options={{
-        headerLeft: () => (
-            <Icon.Button name="ios-menu" size={25} backgroundColor="#3b8abd" onPress={() => navigation.openDrawer()}></Icon.Button>
-        )
-      }} />
-    </ProfileStack.Navigator>
-);
-
 const DetailsStackScreen = ({navigation}) => (
     <DetailsStack.Navigator screenOptions={{
       headerStyle: {
@@ -245,8 +245,25 @@ const DetailsStackScreen = ({navigation}) => (
     }}>
       <DetailsStack.Screen name="DOCTORSINA" component={DetailsScreen} options={{
         headerLeft: () => (
-            <Icon.Button name="ios-menu" size={25} backgroundColor="#3b8abd" onPress={() => navigation.openDrawer()}></Icon.Button>
+            <Icon.Button name="ios-menu" size={25} backgroundColor="#529ecf" onPress={() => navigation.openDrawer()}></Icon.Button>
         )
       }} />
     </DetailsStack.Navigator>
+);
+const SettingsStackScreen = ({navigation}) => (
+    <SettingsStack.Navigator screenOptions={{
+      headerStyle: {
+        backgroundColor: '#3b8abd',
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold'
+      }
+    }}>
+      <DetailsStack.Screen name="Settings" component={SettingsScreen} options={{
+        headerLeft: () => (
+            <Icon.Button name="ios-menu" size={25} backgroundColor="#529ecf" onPress={() => navigation.openDrawer()}></Icon.Button>
+        )
+      }} />
+    </SettingsStack.Navigator>
 );
