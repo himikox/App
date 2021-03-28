@@ -138,8 +138,8 @@ function App () {
 
           <NavigationContainer theme={theme}>
 
-                    <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
-                      <Drawer.Screen name="HomeDrawer" component={HomeStackScreen} />
+                    <Drawer.Navigator drawerContent={props => <DrawerContent {...props}  />}    >
+                      <Drawer.Screen name="HomeDrawer" component={HomeStackScreen}   />
                       <Drawer.Screen name="ProfileScreen" component={ProfileStackScreen} />
                       <Drawer.Screen name="DetailsScreen" component={DetailsStackScreen} />
                       <Drawer.Screen name="SettingsScreen" component={SettingsStackScreen} />

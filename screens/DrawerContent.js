@@ -17,7 +17,7 @@ import {
 } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/Ionicons';
 //import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import { firebase }  from "@react-native-firebase/auth"
 import{ AuthContext } from '../components/context';
 import auth from '@react-native-firebase/auth';
 
@@ -40,8 +40,10 @@ export function DrawerContent(props) {
                                 size={50}
                             />
                             <View style={{marginLeft:15, flexDirection:'column'}}>
-                                <Title style={styles.title}>John Doe</Title>
-                                <Caption style={styles.caption}>@j_doe</Caption>
+                                <Title style={styles.title} >
+
+                                </Title>
+                                <Caption style={styles.caption}> {firebase.auth().currentUser.email}</Caption>
                             </View>
                         </View>
 
