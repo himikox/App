@@ -30,7 +30,7 @@ const SignInScreen = ({navigation}) => {
         secureTextEntry: true,
         confirm_secureTextEntry: true,
     });
-    const { signUp } = React.useContext(AuthContext);
+    //const { signUp } = React.useContext(AuthContext);
     const textInputChange = (val) => {
         if( val.trim().length >= 0 ) {
             setData({
@@ -103,11 +103,11 @@ const SignInScreen = ({navigation}) => {
         if(data.isValidUser)
         { try {
 
-            let response = await auth().createUserWithEmailAndPassword(data.mail, data.password);
-
+            let response = await auth().createUserWithEmailAndPassword(data.mail, data.password)
+            let r = await auth().currentUser.sendEmailVerification();
             if (response && response.user) {
-                signUp(data.mail,'aa');
-                Alert.alert("Success ✅", "Authenticated successfully")
+               // signUp(data.mail,'aa');
+                Alert.alert("Success ✅", "Email Sent.")
             }
         } catch (e) {
             console.error(e.message)

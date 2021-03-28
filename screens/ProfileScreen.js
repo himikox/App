@@ -10,8 +10,8 @@ const ProfileScreen = () => {
         <Button
           title="Click Here"
           onPress={() => {
-              if (user) {
-                  console.log('user');
+              if (auth().currentUser) {
+                  console.log(auth().currentUser.email);
               }
               else { console.log('not user')}
           }}

@@ -19,12 +19,13 @@ import Icon from 'react-native-vector-icons/Ionicons';
 //import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import{ AuthContext } from '../components/context';
+import auth from '@react-native-firebase/auth';
 
 export function DrawerContent(props) {
 
     const paperTheme = useTheme();
 
-    const { signOut, toggleTheme } = React.useContext(AuthContext);
+   // const { signOut, toggleTheme } = React.useContext(AuthContext);
 
     return(
         <View style={{flex:1}}>
@@ -108,7 +109,9 @@ export function DrawerContent(props) {
                         />
                     )}
                     label="Sign Out"
-                    onPress={() => {signOut()}}
+                    onPress={() => {  auth()
+                        .signOut()
+                        .then(() => console.log('User signed out!'));}}
                 />
             </Drawer.Section>
         </View>

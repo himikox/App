@@ -23,6 +23,7 @@ import Users from '../model/users';
 import validator from 'validator';
 
 const SignInScreen = ({navigation}) => {
+    console.log("i'm here1");
 
     const [data, setData] = React.useState({
         mail: '',
@@ -35,7 +36,7 @@ const SignInScreen = ({navigation}) => {
 
     const { colors } = useTheme();
 
-    const { signIn } = React.useContext(AuthContext);
+   // const { signIn } = React.useContext(AuthContext);
 
     const textInputChange = (val) => {
         if( val.trim().length >= 0 ) {
@@ -102,10 +103,20 @@ const SignInScreen = ({navigation}) => {
             console.log("done");
             // __doCreateUser(data.mail,data.password);
             try {
-                let response = await auth().signInWithEmailAndPassword(data.mail, data.password)
 
-                if (response && response.user) {
-                    signIn(data.mail,'aa');
+                let response = await auth().signInWithEmailAndPassword(data.mail, data.password).then(
+
+                  function() {
+                        if (auth().currentUser.emailVerified) {
+                            console.log('Not verified');
+                        } }
+
+
+
+                )
+
+                    if (response && response.user) {
+                  //  signIn(data.mail,'aa');
                     Alert.alert("Success ✅", "Authenticated successfully")
                 }
             } catch (e) {
