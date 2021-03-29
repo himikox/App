@@ -157,18 +157,10 @@ const SignInScreen = ({navigation}) => {
                // const validatorInstance = EmailValidator("ev-d6eee678ad5edfd7954126bb2941ee21")
               //  const responseObject = await validatorInstance(data.mail)
              //   const x = responseObject.statusCode.toString() ;
-                console.log(x);
+            //    console.log(x);
               //  if ( x === '200' || x === '207' || x=== '215'  ) {
-                    let response = await auth().createUserWithEmailAndPassword(data.mail, data.password).catch(function(error)
-                    {
-                        const errorCode = error.code;
-                        const errorMessage = error.message;
+                    let response = await auth().createUserWithEmailAndPassword(data.mail, data.password)
 
-                        if (errorCode == 'auth/email-already-in-use')
-                        {
-                            alert('email-already-in-use.');
-                        }
-                    });
                     let r = await auth().currentUser.sendEmailVerification();
 
 

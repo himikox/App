@@ -119,8 +119,12 @@ const SignInScreen = ({navigation}) => {
                   //  signIn(data.mail,'aa');
                     Alert.alert("Success ✅", "Authenticated successfully")
                 }
-            } catch (e) {
-                console.error(e.message)
+        else {
+
+                    }
+            } catch (e) { Alert.alert("ERROR ✅", "Mail or password doesn't exist")
+
+
             }
         }
     }

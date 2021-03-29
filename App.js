@@ -161,12 +161,13 @@ const   ProfileStackScreen = ({navigation}) => (
       },
       headerTintColor: '#fff',
       headerTitleStyle: {
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+          fontSize:25,
       }
     }}>
-      <DetailsStack.Screen name="Profile" component={ProfileScreen} options={{
+      <DetailsStack.Screen name="Account" component={ProfileScreen} options={{
         headerLeft: () => (
-            <Icon.Button name="ios-menu" size={25} backgroundColor="#529ecf" onPress={() => navigation.openDrawer()}></Icon.Button>
+            <Icon.Button name="ios-menu" size={40} backgroundColor="#3b8abd" onPress={() => navigation.openDrawer()}></Icon.Button>
         )
       }} />
     </ProfileStack.Navigator>
@@ -178,13 +179,14 @@ const HomeStackScreen = ({navigation}) => (
       },
       headerTintColor: '#fff',
       headerTitleStyle: {
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+          fontSize:25,
       }
     }}>
       <HomeStack.Screen name="Home" component={HomeScreen} options={{
         title:'Home',
         headerLeft: () => (
-            <Icon.Button name="ios-menu" size={25} backgroundColor="#3b8abd" onPress={() => navigation.openDrawer()}></Icon.Button>
+            <Icon.Button name="ios-menu" size={40} backgroundColor="#3b8abd" onPress={() => navigation.openDrawer()}></Icon.Button>
         )
       }} />
     </HomeStack.Navigator>
@@ -196,12 +198,13 @@ const DetailsStackScreen = ({navigation}) => (
       },
       headerTintColor: '#fff',
       headerTitleStyle: {
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+          fontSize:25,
       }
     }}>
       <DetailsStack.Screen name="DOCTORSINA" component={DetailsScreen} options={{
         headerLeft: () => (
-            <Icon.Button name="ios-menu" size={25} backgroundColor="#529ecf" onPress={() => navigation.openDrawer()}></Icon.Button>
+            <Icon.Button name="ios-menu" size={40} backgroundColor="#3b8abd" onPress={() => navigation.openDrawer()}></Icon.Button>
         )
       }} />
     </DetailsStack.Navigator>
@@ -213,12 +216,13 @@ const SettingsStackScreen = ({navigation}) => (
       },
       headerTintColor: '#fff',
       headerTitleStyle: {
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+          fontSize:25,
       }
     }}>
       <DetailsStack.Screen name="Settings" component={SettingsScreen} options={{
         headerLeft: () => (
-            <Icon.Button name="ios-menu" size={25} backgroundColor="#529ecf" onPress={() => navigation.openDrawer()}></Icon.Button>
+            <Icon.Button name="ios-menu" size={40} backgroundColor="#3b8abd" onPress={() => navigation.openDrawer()}></Icon.Button>
         )
       }} />
     </SettingsStack.Navigator>

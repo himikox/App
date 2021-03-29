@@ -35,7 +35,7 @@ export function DrawerContent(props) {
                         <View style={{flexDirection:'row',marginTop: 15}}>
                             <Avatar.Image
                                 source={{
-                                    uri: 'https://api.adorable.io/avatars/50/abott@adorable.png'
+                                    uri: 'https://bootdey.com/img/Content/avatar/avatar6.png'
                                 }}
                                 size={50}
                             />
@@ -81,7 +81,7 @@ export function DrawerContent(props) {
                                 size={size}
                                 />
                             )}
-                            label="Profile"
+                            label="Account"
                             onPress={() => {props.navigation.navigate('ProfileScreen')}}
                         />
 
@@ -133,8 +133,9 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
     },
     caption: {
-      fontSize: 14,
+      fontSize: 12,
       lineHeight: 14,
+        marginTop : 10,
     },
     row: {
       marginTop: 20,
