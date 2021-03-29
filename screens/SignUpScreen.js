@@ -20,9 +20,9 @@ import Users from '../model/users';
 import auth from "@react-native-firebase/auth"
 import {AuthContext} from '../components/context';
 import EmailValidator from 'email-validator-net'
-
+import firestore from '@react-native-firebase/firestore';
 const SignInScreen = ({navigation}) => {
-
+    const usersCollection = firestore().collection('patient');
     const [data, setData] = React.useState({
         mail: '',
         password: '',
@@ -165,6 +165,16 @@ const SignInScreen = ({navigation}) => {
 
 
                     if (response && response.user) {
+                      await  firestore()
+                            .collection('patient')
+                          .doc('Aaaa')
+                          .set({
+                              name: 'Ada Lovelace',
+                              age: 30,
+                            })
+                            .then(() => {
+                                console.log('User added!');
+                            });
                         // signUp(data.mail,'aa');
                         Alert.alert("Success ✅", "Email Sent.")
                     }
