@@ -9,28 +9,98 @@ import {
     Button,
     TouchableOpacity, ScrollView,
 } from 'react-native';
+import { Divider } from 'react-native-elements';
+import firestore from '@react-native-firebase/firestore';
 
-const user = firebase.auth().currentUser;
 const ProfileScreen = () => {
+    const [user, setUser] = React.useState({
+
+        firstname :'',
+        lastname : '',
+        mail : '',
+    });
+
+   firestore()
+        .collection('patient')
+        .doc(firebase.auth().currentUser.uid).get()
+        .then(documentSnapshot => {
+            setUser({
+                ...user,
+                firstname : documentSnapshot.data()['firstname'],
+                lastname : documentSnapshot.data()['lastname'],
+                mail : documentSnapshot.data()['mail'],
+
+            });
+            //  user['firstname'] = documentSnapshot.data()['firstname'];
+            // console.log('data',user)
+        });
+
+    //console.log(route);
     return (
+
         <ScrollView>
         <View style={styles.container}>
             <View style={styles.header}></View>
             <Image style={styles.avatar} source={{uri: 'https://bootdey.com/img/Content/avatar/avatar6.png'}}/>
             <View style={styles.body}>
                 <View style={styles.bodyContent}>
-                    <Text style={styles.name}>foulen ben foulen</Text>
-                    <Text style={styles.info}>{user.email}</Text>
+                    <Text style={styles.name}>{user['firstname']}{user['lastname']}</Text>
+                    <Text style={styles.info}></Text>
 
-                    <Text style={styles.description}>, omittam </Text>
+
 
 
                 </View>
-                <View style = {styles.lineStyle} />
-                <Text style={ {fontSize:20,
+
+                <Text style={ {fontSize:27,
                     color:"#05375a",
-                    paddingLeft : 10
-                     }}>Birth date</Text>
+                    paddingLeft : 20
+                     }}>Phone Number</Text>
+                <Text style={styles.description}> 3 november 1997 </Text>
+                <Divider style={{ backgroundColor: '#05375a' , width : 300 , marginLeft : 20} } />
+
+                <Text style={ {fontSize:27,
+                    color:"#05375a",
+                    paddingLeft : 20,
+                    marginTop : 20
+                     }}>Birth Date</Text>
+                <Text style={styles.description}> 3 november 1997 </Text>
+                <Divider style={{ backgroundColor: '#05375a' , width : 300 , marginLeft : 20} } />
+
+                <Text style={ {fontSize:27,
+                    color:"#05375a",
+                    paddingLeft : 20,
+                    marginTop : 20
+                     }}>Home Adress</Text>
+                <Text style={styles.description}> 3 november 1997 </Text>
+                <Divider style={{ backgroundColor: '#05375a' , width : 300 , marginLeft : 20} } />
+
+                <Text style={ {fontSize:27,
+                    color:"#05375a",
+                    paddingLeft : 20,
+                    marginTop : 20
+                     }}>Height</Text>
+                <Text style={styles.description}> 3 november 1997 </Text>
+                <Divider style={{ backgroundColor: '#05375a' , width : 300 , marginLeft : 20} } />
+
+
+                <Text style={ {fontSize:27,
+                    color:"#05375a",
+                    paddingLeft : 20,
+                    marginTop : 20
+                     }}>Weight</Text>
+                <Text style={styles.description}> 3 november 1997 </Text>
+                <Divider style={{ backgroundColor: '#05375a' , width : 300 , marginLeft : 20} } />
+
+                <Text style={ {fontSize:27,
+                    color:"#05375a",
+                    paddingLeft : 20,
+                    marginTop : 20
+                     }}>Chronic Diseases</Text>
+                <Text style={styles.description}> 3 november 1997 </Text>
+                <Divider style={{ backgroundColor: '#05375a' , width : 300 , marginLeft : 20} } />
+
+
             </View>
         </View>
         </ScrollView>
@@ -87,8 +157,8 @@ const styles = StyleSheet.create({
     description:{
         fontSize:16,
         color: "#696969",
-        marginTop:10,
-        textAlign: 'center'
+        marginTop:5,
+        marginLeft : 20
     },
     buttonContainer: {
         marginTop:10,

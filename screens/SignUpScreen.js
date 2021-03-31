@@ -24,6 +24,8 @@ import firestore from '@react-native-firebase/firestore';
 const SignInScreen = ({navigation}) => {
     const usersCollection = firestore().collection('patient');
     const [data, setData] = React.useState({
+        firstname:'',
+        lastname:'',
         mail: '',
         password: '',
         confirm_password: '',
@@ -35,7 +37,7 @@ const SignInScreen = ({navigation}) => {
     });
     //const { signUp } = React.useContext(AuthContext);
     const textInputChange = (val) => {
-        if( val.trim().length >= 4 ) {
+        if( val.trim().length >= 0 ) {
             setData({
                 ...data,
                 mail: val,
@@ -53,17 +55,17 @@ const SignInScreen = ({navigation}) => {
         }
     }
     const LastNameChange = (val) => {
-        if( val.trim().length >= 4 ) {
+        if( val.trim().length >= 1 ) {
             setData({
                 ...data,
-                mail: val,
+                lastname: val,
                 check_LastNameChange: true,
                 isValidUser: true
             });
         } else {
             setData({
                 ...data,
-                mail: val,
+                lastname: val,
                 check_LastNameChange: false,
                 isValidUser: false
 
@@ -71,24 +73,24 @@ const SignInScreen = ({navigation}) => {
         }
     }
     const FirstNameChange = (val) => {
-        if( val.trim().length >= 4 ) {
+        if( val.trim().length >= 1 ) {
             setData({
                 ...data,
-                mail: val,
+                firstname: val,
                 check_FirstNameChange: true,
                 isValidUser: true
             });
         } else {
             setData({
                 ...data,
-                mail: val,
+                firstname: val,
                 check_FirstNameChange: false,
                 isValidUser: false
 
             });
         }
     }
-    const handlePasswordChange = (val) => {
+    const handleConfirmPasswordChange = (val) => {
         if(val !== data.password)
         {
             setData({
@@ -109,7 +111,7 @@ const SignInScreen = ({navigation}) => {
 
     }
 
-    const handleConfirmPasswordChange = (val) => {
+    const handlePasswordChange = (val) => {
         setData({
             ...data,
             confirm_password: val
@@ -153,6 +155,7 @@ const SignInScreen = ({navigation}) => {
     }
     const __doSignUp = async(data) => {
         if(data.isValidUser) {
+            console.log("signup");
             try {
                // const validatorInstance = EmailValidator("ev-d6eee678ad5edfd7954126bb2941ee21")
               //  const responseObject = await validatorInstance(data.mail)
@@ -160,17 +163,18 @@ const SignInScreen = ({navigation}) => {
             //    console.log(x);
               //  if ( x === '200' || x === '207' || x=== '215'  ) {
                     let response = await auth().createUserWithEmailAndPassword(data.mail, data.password)
-
-                    let r = await auth().currentUser.sendEmailVerification();
+                    const us = auth().currentUser;
+                 //   let r = await us.sendEmailVerification();
 
 
                     if (response && response.user) {
                       await  firestore()
                             .collection('patient')
-                          .doc('Aaaa')
+                          .doc(us.uid)
                           .set({
-                              name: 'Ada Lovelace',
-                              age: 30,
+                              mail : data.mail,
+                              firstname: data.firstname ,
+                              lastname : data.lastname,
                             })
                             .then(() => {
                                 console.log('User added!');
@@ -187,7 +191,7 @@ const SignInScreen = ({navigation}) => {
             catch
                 (e)
                 {
-                    console.error(e.message)
+                     Alert.alert("Error✅", e.message);
                 }
                 console.log("done");
                 // __doCreateUser(data.mail,data.password);

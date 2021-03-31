@@ -15,6 +15,7 @@ import {
     DrawerContentScrollView,
     DrawerItem
 } from '@react-navigation/drawer';
+import firestore from '@react-native-firebase/firestore';
 import Icon from 'react-native-vector-icons/Ionicons';
 //import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { firebase }  from "@react-native-firebase/auth"
@@ -22,6 +23,27 @@ import{ AuthContext } from '../components/context';
 import auth from '@react-native-firebase/auth';
 
 export function DrawerContent(props) {
+    const [user, setUser] = React.useState({
+
+    firstname :'',
+        lastname : '',
+        mail : '',
+    });
+
+    firestore()
+        .collection('patient')
+        .doc(firebase.auth().currentUser.uid).get()
+        .then(documentSnapshot => {
+            setUser({
+                ...user,
+                firstname : documentSnapshot.data()['firstname'],
+                lastname : documentSnapshot.data()['lastname'],
+                mail : documentSnapshot.data()['mail'],
+
+            });
+          //  user['firstname'] = documentSnapshot.data()['firstname'];
+           // console.log('data',user)
+        });
 
     const paperTheme = useTheme();
 
@@ -37,13 +59,16 @@ export function DrawerContent(props) {
                                 source={{
                                     uri: 'https://bootdey.com/img/Content/avatar/avatar6.png'
                                 }}
-                                size={50}
+                                size={60}
                             />
                             <View style={{marginLeft:15, flexDirection:'column'}}>
-                                <Title style={styles.title} >
-
+                                <Title style={styles.title}>
+                                    {user['firstname'] }
+                                    {user['lastname'] }
                                 </Title>
-                                <Caption style={styles.caption}> {firebase.auth().currentUser.email}</Caption>
+                                <Caption style={styles.caption}>
+                                    {user['mail']}
+                                </Caption>
                             </View>
                         </View>
 
@@ -165,4 +190,4 @@ const styles = StyleSheet.create({
       paddingVertical: 12,
       paddingHorizontal: 16,
     },
-  });
+  })
