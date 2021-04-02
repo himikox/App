@@ -21,8 +21,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { firebase }  from "@react-native-firebase/auth"
 import{ AuthContext } from '../components/context';
 import auth from '@react-native-firebase/auth';
+import {useState,useEffect} from 'react';
+export function DrawerContent({props,navigation}) {
 
-export function DrawerContent(props) {
     const [user, setUser] = React.useState({
 
     firstname :'',
@@ -30,21 +31,25 @@ export function DrawerContent(props) {
         mail : '',
     });
 
-    firestore()
-        .collection('patient')
-        .doc(firebase.auth().currentUser.uid).get()
-        .then(documentSnapshot => {
-            setUser({
-                ...user,
-                firstname : documentSnapshot.data()['firstname'],
-                lastname : documentSnapshot.data()['lastname'],
-                mail : documentSnapshot.data()['mail'],
+    const fetchUser=async()=>{
+        firestore()
+            .collection('patient')
+            .doc(firebase.auth().currentUser.uid).get()
+            .then(documentSnapshot => {
+                setUser({
+                    ...user,
+                    firstname : documentSnapshot.data()['firstname'],
+                    lastname : documentSnapshot.data()['lastname'],
+                    mail : documentSnapshot.data()['mail'],
 
+                });
+                //  user['firstname'] = documentSnapshot.data()['firstname'];
+                // console.log('data',user)
             });
-          //  user['firstname'] = documentSnapshot.data()['firstname'];
-           // console.log('data',user)
-        });
-
+    }
+    useEffect(() => {
+        fetchUser();
+    }, [])
     const paperTheme = useTheme();
 
    // const { signOut, toggleTheme } = React.useContext(AuthContext);
@@ -85,7 +90,7 @@ export function DrawerContent(props) {
                                 />
                             )}
                             label="Home"
-                            onPress={() => {props.navigation.navigate('Home')}}
+                            onPress={() => {navigation.navigate('Home')}}
                         />
                         <DrawerItem
                             icon={({color, size}) => (
@@ -96,7 +101,7 @@ export function DrawerContent(props) {
                                 />
                             )}
                             label="DOCTORSINA"
-                            onPress={() => {props.navigation.navigate('DetailsScreen')}}
+                            onPress={() => {navigation.navigate('DetailsScreen')}}
                         />
                         <DrawerItem
                             icon={({color, size}) => (
@@ -107,7 +112,8 @@ export function DrawerContent(props) {
                                 />
                             )}
                             label="Account"
-                            onPress={() => {props.navigation.navigate('ProfileScreen')}}
+                            onPress={() => {
+                                navigation.navigate('ProfileScreen')}}
                         />
 
                         <DrawerItem
@@ -119,7 +125,7 @@ export function DrawerContent(props) {
                                 />
                             )}
                             label="Settings"
-                            onPress={() => {props.navigation.navigate('SettingsScreen')}}
+                            onPress={() => {navigation.navigate('SettingsScreen')}}
                         />
 
                     </Drawer.Section>
@@ -144,6 +150,7 @@ export function DrawerContent(props) {
         </View>
     );
 }
+
 
 const styles = StyleSheet.create({
     drawerContent: {

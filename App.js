@@ -46,7 +46,7 @@ const SettingsStack = createStackNavigator();
 
 const Drawer = createDrawerNavigator();
 
-function App () {
+function App ({route}) {
   // const [isLoading, setIsLoading] = React.useState(true);
   // const [userToken, setUserToken] = React.useState(null);
 

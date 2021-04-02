@@ -11,8 +11,11 @@ import {
 } from 'react-native';
 import { Divider } from 'react-native-elements';
 import firestore from '@react-native-firebase/firestore';
+import {useState,useEffect} from 'react';
+import {Title} from 'react-native-paper';
+function ProfileScreen() {
 
-const ProfileScreen = () => {
+    // const db=firebase.firestore();
     const [user, setUser] = React.useState({
 
         firstname :'',
@@ -20,20 +23,28 @@ const ProfileScreen = () => {
         mail : '',
     });
 
-   firestore()
-        .collection('patient')
-        .doc(firebase.auth().currentUser.uid).get()
-        .then(documentSnapshot => {
-            setUser({
-                ...user,
-                firstname : documentSnapshot.data()['firstname'],
-                lastname : documentSnapshot.data()['lastname'],
-                mail : documentSnapshot.data()['mail'],
+    const fetchUser=async()=>{
+        firestore()
+            .collection('patient')
+            .doc(firebase.auth().currentUser.uid).get()
+            .then(documentSnapshot => {
+                setUser({
+                    ...user,
+                    firstname : documentSnapshot.data()['firstname'],
+                    lastname : documentSnapshot.data()['lastname'],
+                    mail : documentSnapshot.data()['mail'],
 
+                });
+                //  user['firstname'] = documentSnapshot.data()['firstname'];
+                // console.log('data',user)
             });
-            //  user['firstname'] = documentSnapshot.data()['firstname'];
-            // console.log('data',user)
-        });
+    }
+    useEffect(() => {
+        fetchUser();
+    }, [])
+
+
+
 
     //console.log(route);
     return (
@@ -44,7 +55,9 @@ const ProfileScreen = () => {
             <Image style={styles.avatar} source={{uri: 'https://bootdey.com/img/Content/avatar/avatar6.png'}}/>
             <View style={styles.body}>
                 <View style={styles.bodyContent}>
-                    <Text style={styles.name}>{user['firstname']}{user['lastname']}</Text>
+                    <Text style={styles.name}>{user['firstname'] }
+                        {user['lastname'] }
+                    </Text>
                     <Text style={styles.info}></Text>
 
 
