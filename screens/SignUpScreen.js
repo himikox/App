@@ -21,6 +21,7 @@ import auth from "@react-native-firebase/auth"
 import {AuthContext} from '../components/context';
 import EmailValidator from 'email-validator-net'
 import firestore from '@react-native-firebase/firestore';
+
 const SignInScreen = ({navigation}) => {
     const usersCollection = firestore().collection('patient');
     const [data, setData] = React.useState({
@@ -30,10 +31,13 @@ const SignInScreen = ({navigation}) => {
         password: '',
         confirm_password: '',
         check_textInputChange: true,
+        check_passwordInputChange: true,
+        check_ConfirmPasswordInputChange: true,
         check_FirstNameChange: true,
         check_LastNameChange: true,
         secureTextEntry: true,
         confirm_secureTextEntry: true,
+        isValidUser : false,
     });
     //const { signUp } = React.useContext(AuthContext);
     const textInputChange = (val) => {
@@ -73,7 +77,7 @@ const SignInScreen = ({navigation}) => {
         }
     }
     const FirstNameChange = (val) => {
-        if( val.trim().length >= 1 ) {
+        if( val.trim().length >= 4 ) {
             setData({
                 ...data,
                 firstname: val,
@@ -91,19 +95,19 @@ const SignInScreen = ({navigation}) => {
         }
     }
     const handleConfirmPasswordChange = (val) => {
-        if(val !== data.password)
+        if(val == data.password)
         {
             setData({
                 ...data,
-                password: val,
-
+               // password: val,
+                check_ConfirmPasswordInputChange : true,
                 isValidUser: true
             });
         } else {
             setData({
                 ...data,
-                password: val,
-
+              //  password: val,
+                check_ConfirmPasswordInputChange : false,
                 isValidUser: false
 
             });
@@ -112,10 +116,23 @@ const SignInScreen = ({navigation}) => {
     }
 
     const handlePasswordChange = (val) => {
+        if(val >4) {
+            setData({
+                ...data,
+                password: val,
+                isValidUser: true,
+                check_passwordInputChange : true
+            });
+        }
+     else {
         setData({
             ...data,
-            confirm_password: val
+              password: val,
+            check_passwordInputChange : false,
+            isValidUser: false
+
         });
+    }
     }
 
     const updateSecureTextEntry = () => {
@@ -126,18 +143,23 @@ const SignInScreen = ({navigation}) => {
     }
     const handleValidMail = (val) => {
         if( validator.isEmail(val)) {
-            console.log("email valide");
-            setData({
 
-                ...data,
-                isValidUser: true
-            });
+               console.log("email valide");
+               setData({
+                   check_textInputChange: true,
+                   ...data,
+                   isValidUser: true
+               });
+
+
+
         } else {
-            console.log("emailpas valide");
+            console.log("email pas valide");
 
 
             setData({
                 ...data,
+                check_textInputChange: false,
                 isValidUser: false
             });
         }
@@ -157,14 +179,15 @@ const SignInScreen = ({navigation}) => {
         if(data.isValidUser) {
             console.log("signup");
             try {
-               // const validatorInstance = EmailValidator("ev-d6eee678ad5edfd7954126bb2941ee21")
-              //  const responseObject = await validatorInstance(data.mail)
-             //   const x = responseObject.statusCode.toString() ;
-            //    console.log(x);
-              //  if ( x === '200' || x === '207' || x=== '215'  ) {
+               const validatorInstance = EmailValidator("ev-d6eee678ad5edfd7954126bb2941ee21")
+               const responseObject = await validatorInstance(data.mail)
+               const x = responseObject.statusCode.toString() ;
+                console.log(x);
+                if ( x === '200' || x === '207' || x=== '215'  ) {
+
                     let response = await auth().createUserWithEmailAndPassword(data.mail, data.password)
                     const us = auth().currentUser;
-                 //   let r = await us.sendEmailVerification();
+                    let r = await us.sendEmailVerification();
 
 
                     if (response && response.user) {
@@ -182,11 +205,11 @@ const SignInScreen = ({navigation}) => {
                         // signUp(data.mail,'aa');
                         Alert.alert("Success ✅", "Email Sent.")
                     }
-              //  }
-     //   else {
-          //          Alert.alert("Error", "Please Enter a Valid mail")
+                }
+        else {
+                    Alert.alert("Error", "Please Enter a Valid mail")
 
-           //     }
+               }
                 }
             catch
                 (e)
@@ -234,9 +257,9 @@ const SignInScreen = ({navigation}) => {
                         style={styles.textInput}
                         autoCapitalize="none"
                         onChangeText={(val) => FirstNameChange(val)}
-                       // onEndEditing={(e)=>handleValidFirst(e.nativeEvent.text)}
+                        onEndEditing={(e)=> FirstNameChange(e.nativeEvent.text)}
                     />
-                    {data.check_textInputChange ?null :
+                    {data.check_FirstNameChange ?
                         <Animatable.View
                             animation="bounceIn"
                         >
@@ -246,11 +269,12 @@ const SignInScreen = ({navigation}) => {
                                 size={20}
                             />
                         </Animatable.View>
+                        : null
                        }
                 </View>
                 { data.check_FirstNameChange ? null :
                     <Animatable.View animation="fadeInLeft" duration={500}>
-                        <Text style={styles.errorMsg}>EMail must be valid</Text>
+                        <Text style={styles.errorMsg}>please enter your first name</Text>
                     </Animatable.View>
                 }
 
@@ -266,9 +290,9 @@ const SignInScreen = ({navigation}) => {
                         style={styles.textInput}
                         autoCapitalize="none"
                         onChangeText={(val) => LastNameChange(val)}
-                     //   onEndEditing={(e)=>handleValidLast(e.nativeEvent.text)}
+                       onEndEditing={(e)=>LastNameChange(e.nativeEvent.text)}
                     />
-                    {data.check_LastNameChange ?null :
+                    {data.check_LastNameChange ?
                         <Animatable.View
                             animation="bounceIn"
                         >
@@ -278,11 +302,12 @@ const SignInScreen = ({navigation}) => {
                                 size={20}
                             />
                         </Animatable.View>
+                        : null
                         }
                 </View>
                 { data.check_LastNameChange ? null :
                     <Animatable.View animation="fadeInLeft" duration={500}>
-                        <Text style={styles.errorMsg}>EMail must be valid</Text>
+                        <Text style={styles.errorMsg}>Please enter your last name</Text>
                     </Animatable.View>
                 }
 
@@ -300,7 +325,7 @@ const SignInScreen = ({navigation}) => {
                     onChangeText={(val) => textInputChange(val)}
                     onEndEditing={(e)=>handleValidMail(e.nativeEvent.text)}
                 />
-                {data.check_textInputChange ? null :
+                {data.check_textInputChange ?
                 <Animatable.View
                     animation="bounceIn"
                 >
@@ -310,11 +335,11 @@ const SignInScreen = ({navigation}) => {
                         size={20}
                     />
                 </Animatable.View>
-                }
+                : null}
             </View>
                 { data.check_textInputChange ? null :
                     <Animatable.View animation="fadeInLeft" duration={500}>
-                        <Text style={styles.errorMsg}>EMail must be valid</Text>
+                        <Text style={styles.errorMsg}>Please enter a valid mail</Text>
                     </Animatable.View>
                 }
 
@@ -333,6 +358,7 @@ const SignInScreen = ({navigation}) => {
                     style={styles.textInput}
                     autoCapitalize="none"
                     onChangeText={(val) => handlePasswordChange(val)}
+                    onEndEditing={(e)=>handlePasswordChange(e.nativeEvent.text)}
                 />
                 <TouchableOpacity
                     onPress={updateSecureTextEntry}
@@ -353,6 +379,7 @@ const SignInScreen = ({navigation}) => {
                 </TouchableOpacity>
             </View>
 
+
             <Text style={[styles.text_footer, {
                 marginTop: 35
             }]}>Confirm Password</Text>
@@ -368,6 +395,7 @@ const SignInScreen = ({navigation}) => {
                     style={styles.textInput}
                     autoCapitalize="none"
                     onChangeText={(val) => handleConfirmPasswordChange(val)}
+                    onEndEditing={(e)=>handleConfirmPasswordChange(e.nativeEvent.text)}
                 />
                 <TouchableOpacity
                     onPress={updateConfirmSecureTextEntry}
@@ -386,7 +414,13 @@ const SignInScreen = ({navigation}) => {
                     />
                     }
                 </TouchableOpacity>
+
             </View>
+                { data.check_ConfirmPasswordInputChange ? null :
+                    <Animatable.View animation="fadeInLeft" duration={500}>
+                        <Text style={styles.errorMsg}>password must be the same</Text>
+                    </Animatable.View>
+                }
             <View style={styles.textPrivate}>
                 <Text style={styles.color_textPrivate}>
                     By signing up you agree to our
