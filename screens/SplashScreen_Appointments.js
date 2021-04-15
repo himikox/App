@@ -12,7 +12,7 @@ import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useTheme } from '@react-navigation/native';
-
+import SignInScreen from './SignInScreen';
 const SplashScreen_Appointments = ({navigation}) => {
     const { colors } = useTheme();
 
@@ -48,11 +48,12 @@ const SplashScreen_Appointments = ({navigation}) => {
 
 
                 </View>
-
+                <TouchableOpacity onPress={()=>navigation.navigate('SignInScreen')}>
                 <Image source={require('../assets/gettingstarted.png')} style={{alignSelf: 'center',
                     resizeMode: 'stretch',width : 375,height : 90,marginTop:70}}>
 
                 </Image>
+                </TouchableOpacity>
 
 
             </Animatable.View>
