@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
+import RNRasa from 'react-native-rasa';
 
 const DetailsScreen = ({navigation}) => {
+    const HOST = 'http://localhost:5005';
     const [state, setState] = React.useState({
 
         messages: [
@@ -27,12 +29,11 @@ const DetailsScreen = ({navigation}) => {
     return (
 
           <View style={{ flex: 1, backgroundColor: '#fff' }}>
-              <GiftedChat
-                  messages={state.messages}
-                  onSend={messages => onSend(messages)}
-                  user={{
-                      _id: 1
-                  }}
+              <RNRasa
+                  host={HOST}
+                  onSendMessFailed={(error) => console.log(error)}
+                  emptyResponseMessage="Sorry, I don't understand"
+                  onEmptyResponse={() => console.log('Handle with your custom action')}
               />
 
 
