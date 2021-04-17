@@ -52,16 +52,14 @@ const SplashScreen_Doctor = ({navigation}) => {
 
                     <TouchableOpacity onPress={()=>navigation.navigate('SplashScreen_Medicine')}
                                       style={{
-                                          resizeMode: 'stretch',width : 80,height : 70,alignItems: "flex-end",left:310}}>
+                                          resizeMode: 'stretch',width : 80,height : 70,alignItems: "flex-end",left:width*0.68}}>
                         <Image source={require('../assets/fleshymin.png')} style={{
-                            resizeMode: 'stretch',width : 80,height : 70}} />
+                            resizeMode: 'stretch',width : width*0.2,height : height*0.1,alignItems: "flex-end",left : width*0.06}} />
                     </TouchableOpacity>
 
                 </View>
-                <Image source={require('../assets/felsadoctors.png')} style={{alignSelf: 'center',
-                resizeMode: 'stretch',width : 90,height : 10}}/>
-
-
+                <Image source={require('../assets/felsadoctors.png')} style={{alignSelf: 'center',marginBottom:'5%',
+                resizeMode: 'stretch',width : width*0.2,height : height*0.015}}/>
             </Animatable.View>
         </View>
     );
@@ -83,19 +81,20 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     row: {
-        marginTop:50,
+        marginTop: height*0.1,
         width:width,
         flexDirection: "row",
         flexWrap: "wrap",
     },
     footer: {
+
         elevation: 20,
         backgroundColor: '#ffffff',
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
 
         paddingHorizontal: 30,
-        height : height*0.45
+        height : height*0.50
 
     },
     logo: {

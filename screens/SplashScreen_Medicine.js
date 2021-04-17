@@ -51,23 +51,24 @@ const SplashScreen_Medicine = ({navigation}) => {
 
                 </View>
                 <View style={styles.row}>
-                    <TouchableOpacity onPress={()=>navigation.navigate('SplashScreen_Doctor')}>
+                    <TouchableOpacity onPress={()=>navigation.navigate('SplashScreen_Doctor')}
+                                      style={{
+                                          resizeMode: 'stretch',width : width*0.2,height : height*0.1,alignItems: "flex-start"}}>
                         <Image source={require('../assets/fleshysar.png')} style={{
                             alignSelf: "flex-start",
-                            resizeMode: 'stretch',width : 65,height : 60,
-                            right : 30}}/>
+                            resizeMode: 'stretch',width : width*0.18,height : height*0.09,right:width*0.1
+                            }}/>
                     </TouchableOpacity>
-                <TouchableOpacity onPress={()=>navigation.navigate('SplashScreen_Appointments')}
-                                    style={{
-                    resizeMode: 'stretch',width : 80,height : 70,alignItems: "flex-end",left:240}}>
-                    <Image source={require('../assets/fleshymin.png')} style={{
-                        resizeMode: 'stretch',width : 80,height : 70}} />
-                </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>navigation.navigate('SplashScreen_Appointments')}
+                                      style={{
+                                          resizeMode: 'stretch',width : width*0.2,height : height*0.1,alignItems: "flex-end",left:width*0.55}}>
+                        <Image source={require('../assets/fleshymin.png')} style={{
+                            resizeMode: 'stretch',width : width*0.2,height : height*0.1}} />
+                    </TouchableOpacity>
 
                 </View>
-                <Image source={require('../assets/felsamedicine.png')} style={{alignSelf: 'center',
-                    resizeMode: 'stretch',width : 90,height : 10}}/>
-
+                <Image source={require('../assets/felsamedicine.png')} style={{alignSelf: 'center',marginBottom:'5%',
+                    resizeMode: 'stretch',width : width*0.2,height : height*0.015}}/>
 
             </Animatable.View>
         </View>
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff'
     },
     row: {
-        marginTop:50,
+        marginTop :height*0.1,
         width:width,
         flexDirection: "row",
         flexWrap: "wrap",
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 0,
 
         paddingHorizontal: 30,
-        height : height*0.45
+        height : height*0.50
 
     },
     logo: {

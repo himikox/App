@@ -9,6 +9,7 @@ import HomeScreen from './HomeScreen';
 import DetailsScreen from './DetailsScreen';
 import ExploreScreen from './ExploreScreen';
 import ProfileScreen from './ProfileScreen';
+import {ImageBackground} from 'react-native';
 
 const HomeStack = createStackNavigator();
 const DetailsStack = createStackNavigator();
@@ -31,7 +32,12 @@ const MainTabScreen = () => (
             <Icon name="ios-home" color={color} size={26} />
           ),
         }}
-      />
+      >
+          <ImageBackground
+              source={require('../assets/header.png')}
+              style={{width: '100%', height: 80}}
+          />
+      </Tab.Screen>
       <Tab.Screen
         name="Notifications"
         component={DetailsStackScreen}

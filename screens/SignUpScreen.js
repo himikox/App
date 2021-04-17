@@ -9,7 +9,7 @@ import {
     Platform,
     StyleSheet,
     ScrollView,
-    StatusBar, Alert,
+    StatusBar, Alert, Image,
 } from 'react-native';
 import validator from 'validator';
 import * as Animatable from 'react-native-animatable';
@@ -21,8 +21,8 @@ import auth from "@react-native-firebase/auth"
 import {AuthContext} from '../components/context';
 import EmailValidator from 'email-validator-net'
 import firestore from '@react-native-firebase/firestore';
-
-const SignInScreen = ({navigation}) => {
+import SignInScreen from './SignInScreen';
+const SignUpScreen = ({navigation}) => {
     const usersCollection = firestore().collection('patient');
     const [data, setData] = React.useState({
         firstname:'',
@@ -236,22 +236,23 @@ const SignInScreen = ({navigation}) => {
 
     return (
       <View style={styles.container}>
-          <StatusBar backgroundColor='#529ecf' barStyle="light-content"/>
+          <StatusBar backgroundColor='#ffff' barStyle="dark-content"/>
+          <View style={{paddingHorizontal:20,paddingVertical:10}}>
+              <TouchableOpacity onPress={()=>navigation.navigate('SignInScreen')}>
+                  <Image source={require("../assets/SignUp/back-arrow.png")} style={{resizeMode: 'stretch',width:18,height:30}}/>
+              </TouchableOpacity>
+          </View>
         <View style={styles.header}>
-            <Text style={styles.text_header}>Register Now!</Text>
+            <Text style={styles.text_header}>Sign Up</Text>
         </View>
         <Animatable.View
             animation="fadeInUpBig"
             style={styles.footer}
         >
             <ScrollView>
-                <Text style={styles.text_footer}>First Name</Text>
-                <View style={styles.action}>
-                    <FontAwesome
-                        name="user-o"
-                        color="#05375a"
-                        size={20}
-                    />
+
+                <View style={styles.action2}>
+
                     <TextInput
                         placeholder="Your First Name"
                         style={styles.textInput}
@@ -263,11 +264,7 @@ const SignInScreen = ({navigation}) => {
                         <Animatable.View
                             animation="bounceIn"
                         >
-                            <Feather
-                                name="check-circle"
-                                color="green"
-                                size={20}
-                            />
+
                         </Animatable.View>
                         : null
                        }
@@ -278,13 +275,9 @@ const SignInScreen = ({navigation}) => {
                     </Animatable.View>
                 }
 
-                <Text style={styles.text_footer}>Last Name</Text>
-                <View style={styles.action}>
-                    <FontAwesome
-                        name="user-o"
-                        color="#05375a"
-                        size={20}
-                    />
+
+                <View style={styles.action2}>
+
                     <TextInput
                         placeholder="Your Last Name"
                         style={styles.textInput}
@@ -296,11 +289,7 @@ const SignInScreen = ({navigation}) => {
                         <Animatable.View
                             animation="bounceIn"
                         >
-                            <Feather
-                                name="check-circle"
-                                color="green"
-                                size={20}
-                            />
+
                         </Animatable.View>
                         : null
                         }
@@ -311,13 +300,9 @@ const SignInScreen = ({navigation}) => {
                     </Animatable.View>
                 }
 
-            <Text style={styles.text_footer}>Mail</Text>
-            <View style={styles.action}>
-                <FontAwesome
-                    name="user-o"
-                    color="#05375a"
-                    size={20}
-                />
+
+            <View style={styles.action2}>
+
                 <TextInput
                     placeholder="Your eMail"
                     style={styles.textInput}
@@ -329,11 +314,7 @@ const SignInScreen = ({navigation}) => {
                 <Animatable.View
                     animation="bounceIn"
                 >
-                    <Feather
-                        name="check-circle"
-                        color="green"
-                        size={20}
-                    />
+
                 </Animatable.View>
                 : null}
             </View>
@@ -343,15 +324,9 @@ const SignInScreen = ({navigation}) => {
                     </Animatable.View>
                 }
 
-            <Text style={[styles.text_footer, {
-                marginTop: 35
-            }]}>Password</Text>
-            <View style={styles.action}>
-                <Feather
-                    name="lock"
-                    color="#05375a"
-                    size={20}
-                />
+
+            <View style={styles.action2}>
+
                 <TextInput
                     placeholder="Your Password"
                     secureTextEntry={data.secureTextEntry ? true : false}
@@ -380,15 +355,9 @@ const SignInScreen = ({navigation}) => {
             </View>
 
 
-            <Text style={[styles.text_footer, {
-                marginTop: 35
-            }]}>Confirm Password</Text>
-            <View style={styles.action}>
-                <Feather
-                    name="lock"
-                    color="#05375a"
-                    size={20}
-                />
+
+            <View style={styles.action2}>
+
                 <TextInput
                     placeholder="Confirm Your Password"
                     secureTextEntry={data.confirm_secureTextEntry ? true : false}
@@ -421,54 +390,32 @@ const SignInScreen = ({navigation}) => {
                         <Text style={styles.errorMsg}>password must be the same</Text>
                     </Animatable.View>
                 }
-            <View style={styles.textPrivate}>
-                <Text style={styles.color_textPrivate}>
-                    By signing up you agree to our
-                </Text>
-                <Text style={[styles.color_textPrivate, {fontWeight: 'bold'}]}>{" "}Terms of service</Text>
-                <Text style={styles.color_textPrivate}>{" "}and</Text>
-                <Text style={[styles.color_textPrivate, {fontWeight: 'bold'}]}>{" "}Privacy policy</Text>
-            </View>
-            <View style={styles.button}>
-                <TouchableOpacity
-                    style={styles.signIn}
-                    onPress={() => {__doSignUp ( data )}}
-                >
-                <LinearGradient
-                    colors={['#529ecf', '#529ecf']}
-                    style={styles.signIn}
-                >
-                    <Text style={[styles.textSign, {
-                        color:'#fff'
-                    }]}>Sign Up</Text>
-                </LinearGradient>
-                </TouchableOpacity>
 
-                <TouchableOpacity
-                    onPress={() => navigation.goBack()}
-                    style={[styles.signIn, {
-                        borderColor: '#529ecf',
-                        borderWidth: 1,
-                        marginTop: 15
-                    }]}
-                >
-                    <Text style={[styles.textSign, {
-                        color: '#529ecf'
-                    }]}>Sign In</Text>
-                </TouchableOpacity>
-            </View>
+
+                <View style={styles.button}>
+                    <TouchableOpacity
+                        style={styles.signIn}
+                        onPress={() => {__doSignUp ( data )}}
+                    >
+                        <Image source={require('../assets/SignUp/Button.png')} style={{resizeMode: 'stretch',width : 400,height : 90}}/>
+
+                    </TouchableOpacity>
+
+
+                </View>
             </ScrollView>
+
         </Animatable.View>
       </View>
     );
 };
 
-export default SignInScreen;
+export default SignUpScreen;
 
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#529ecf'
+      backgroundColor: '#ffffff'
     },
     header: {
         flex: 1,
@@ -476,17 +423,29 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingBottom: 50
     },
+    action2: {
+
+        flexDirection: 'row',
+
+        marginBottom:20,
+        borderWidth : 1,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        borderBottomLeftRadius: 10,
+        borderBottomRightRadius: 10,
+        borderColor: '#cfcfcf',
+        paddingBottom: 1.5
+    },
     footer: {
-        flex: Platform.OS === 'ios' ? 3 : 5,
+        flex: 10,
         backgroundColor: '#fff',
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         paddingHorizontal: 20,
-        paddingVertical: 30
     },
     text_header: {
-        color: '#fff',
-        fontWeight: 'bold',
+        color: '#2d7ba7',
+
         fontSize: 30
     },
     text_footer: {
@@ -503,10 +462,11 @@ const styles = StyleSheet.create({
     },
     textInput: {
         flex: 1,
-        marginTop: Platform.OS === 'ios' ? 0 : -12,
+        marginTop: Platform.OS === 'ios' ? 0 : 4,
 
-        paddingLeft: 10,
-        color: '#05375a',
+        paddingLeft: 20,
+        color: '#b1b1b1',
+        fontSize : 15
     },
     button: {
         alignItems: 'center',

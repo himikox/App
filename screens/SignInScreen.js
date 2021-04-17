@@ -7,6 +7,7 @@ import {
     Platform,
     StyleSheet,
     StatusBar,
+    ScrollView,
     Alert, Image, Dimensions,
 } from 'react-native';
 import SplashScreen_Appointments from './SplashScreen_Appointments';
@@ -16,9 +17,9 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import auth,{ firebase }  from "@react-native-firebase/auth"
 import {RadioButton, useTheme} from 'react-native-paper';
-
+import SignUpScreen from './SignUpScreen';
 import { AuthContext } from '../components/context';
-
+import ForgotPasswordScreen from './ForgotPasswordScreen';
 import Users from '../model/users';
 import validator from 'validator';
 
@@ -161,7 +162,7 @@ const SignInScreen = ({navigation}) => {
         <View style={styles.header}>
             <Text style={styles.text_header}>Sign In</Text>
         </View>
-
+          <ScrollView>
           <Animatable.View
               animation="fadeInUpBig"
               style={styles.footer}
@@ -241,7 +242,7 @@ const SignInScreen = ({navigation}) => {
                       <RadioButton
                           color={'grey'}
                           value="first"
-                          status={ checked === 'first' ? 'checked' : 'unchecked' }
+                          status={ checked === 'first' ? 'unchecked' : 'checked' }
                           onPress={() => setChecked('first')}
                       />
                   </View>
@@ -249,7 +250,8 @@ const SignInScreen = ({navigation}) => {
                       <Text style={{color: '#a7a7a7', fontSize:16,right:30}}>Remember</Text>
 
                   <TouchableOpacity>
-                      <Text style={{color: '#a7a7a7', fontSize:16,alignSelf:'flex-end',left:90}}>Forgot password?</Text>
+                      <Text style={{color: '#a7a7a7', fontSize:16,alignSelf:'flex-end',left:90}}
+                            onPress={()=>navigation.navigate('ForgotPasswordScreen')}>Forgot password?</Text>
                   </TouchableOpacity>
 
               </View>
@@ -259,34 +261,42 @@ const SignInScreen = ({navigation}) => {
                     style={styles.signIn}
                     onPress={() => {__doSingIn( data)}}
                 >
-               <Image source={require('../assets/SignIn/Button.png')} style={{resizeMode: 'stretch',width : 400,height : 90}}/>
+               <Image source={require('../assets/SignIn/SignInbutton.png')} style={{resizeMode: 'stretch',width : 400,height : 90}}/>
 
                 </TouchableOpacity>
-                <Text style={{color: '#a7a7a7', fontSize:16,alignItems: 'center'}}>OR</Text>
+                <Text style={{color: '#a7a7a7', fontSize:16,alignItems: 'center',paddingVertical:10}}>Or</Text>
 
 
             </View>
 
               <View style={styles.row}>
-                  <TouchableOpacity
-                      style={styles.signIn}
-                      onPress={() => {__doSingIn( data)}}
-                  >
-                      <Image source={require('../assets/SignIn/facebook_button.png')}
-                             style={{resizeMode: 'stretch',width : 100,height : 20,alignSelf:'flex-start',right:30}}/>
-
+                  <TouchableOpacity onPress={()=>navigation.navigate('SplashScreen_Doctor')}>
+                      <Image source={require('../assets/SignIn/facebook_button.png')} style={{
+                          alignSelf: "flex-start",
+                          resizeMode: 'stretch',width : 170,height : 50,
+                          right : 30}}/>
                   </TouchableOpacity>
-                  <TouchableOpacity
-                      style={styles.signIn}
-                      onPress={() => {__doSingIn( data)}}
-                  >
-                      <Image source={require('../assets/SignIn/facebook_button.png')}
-                             style={{resizeMode: 'stretch',width : 100,height : 20,alignSelf:'flex-end',left:90}}/>
-
+                  <TouchableOpacity onPress={()=>navigation.navigate('SplashScreen_Appointments')}
+                                    style={{
+                                        resizeMode: 'stretch',width : 80,height : 70,alignItems: "flex-end",left:100}}>
+                      <Image source={require('../assets/SignIn/google_button.png')} style={{
+                          resizeMode: 'stretch',width : 170,height : 50}} />
                   </TouchableOpacity>
               </View>
           </Animatable.View>
+          <View style={styles.textPrivate}>
+              <Text style={styles.color_textPrivate}>
+                  Don't Have Account ?
+              </Text>
+              <Text style={ {fontWeight: 'bold',color:"#2d7ba7"}}
+                    onPress={()=>navigation.navigate('SignUpScreen')}>{" "} Create Account.</Text>
+
+          </View>
+          </ScrollView>
+
+
       </View>
+
     );
 };
 
@@ -309,6 +319,15 @@ const styles = StyleSheet.create({
         width:width,
         flexDirection: "row",
         flexWrap: "wrap",
+    },
+    textPrivate: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        marginBottom: height*0.08,
+        left:width*0.05
+    },
+    color_textPrivate: {
+        color: 'grey'
     },
     footer: {
         flex: 10,
