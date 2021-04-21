@@ -21,6 +21,7 @@
     "@react-navigation/stack": "^5.0.6",
     "email-existence": "^0.1.6",
     "email-validator-net": "^2.0.9",
+    "expo": "^41.0.0",
     "npm": "^7.9.0",
     "react": ">=16.9.0",
     "react-native": "0.61.5",
@@ -28,8 +29,10 @@
     "react-native-elements": "^3.3.2",
     "react-native-gesture-handler": "^1.6.0",
     "react-native-gifted-chat": "^0.16.3",
+    "react-native-keyboard-aware-scroll-view": "^0.9.3",
     "react-native-linear-gradient": "^2.5.6",
     "react-native-paper": "^3.6.0",
+    "react-native-phone-number-input": "^2.0.1",
     "react-native-rasa": "^0.0.8",
     "react-native-reanimated": "^1.7.0",
     "react-native-safe-area-context": "^0.7.3",
@@ -37,6 +40,7 @@
     "react-native-svg": "^12.1.1-0",
     "react-native-vector-icons": "^6.6.0",
     "react-native-webpack": "^0.1.1",
+
     "validator": "^13.5.2"
   },
   "peerDependencies": {

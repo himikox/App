@@ -8,7 +8,7 @@ import {
     StyleSheet,
     StatusBar,
     ScrollView,
-    Alert, Image, Dimensions,
+    Alert, Image, Dimensions,CheckBox,
 } from 'react-native';
 import SplashScreen_Appointments from './SplashScreen_Appointments';
 import * as Animatable from 'react-native-animatable';
@@ -25,7 +25,7 @@ import validator from 'validator';
 
 const SignInScreen = ({navigation}) => {
     console.log("i'm here1");
-
+    const [isSelected, setSelection] = React.useState(false);
     const [data, setData] = React.useState({
         mail: '',
         password: '',
@@ -153,21 +153,21 @@ const SignInScreen = ({navigation}) => {
     const [checked, setChecked] = React.useState('first');
     return (
       <View style={styles.container}>
+
           <StatusBar backgroundColor='#fff' barStyle="dark-content"/>
-          <View style={{paddingHorizontal:20,paddingVertical:20}}>
-              <TouchableOpacity onPress={()=>navigation.navigate('SplashScreen_Appointments')}>
-              <Image source={require("../assets/SignIn/back-arrow.png")} style={{resizeMode: 'stretch',width:18,height:30}}/>
-              </TouchableOpacity>
-          </View>
-        <View style={styles.header}>
-            <Text style={styles.text_header}>Sign In</Text>
-        </View>
-          <ScrollView>
+
+
+          <ScrollView >
           <Animatable.View
               animation="fadeInUpBig"
               style={styles.footer}
+
           >
-            <View style={styles.action2}>
+              <Text style={{color: '#2d7ba7',
+                  paddingVertical: height*0.03,
+                  fontSize: width*0.09,
+                  }}>Sign In</Text>
+            <View style={styles.action2} >
 
                 <TextInput
                     placeholder="E-mail"
@@ -212,7 +212,7 @@ const SignInScreen = ({navigation}) => {
                     onChangeText={(val) => handlePasswordChange(val)}
                 />
                 <TouchableOpacity
-                    onPress={updateSecureTextEntry}
+                    onPress={updateSecureTextEntry} style={{marginTop:15}}
                 >
                     {data.secureTextEntry ?
                     <Feather
@@ -238,61 +238,63 @@ const SignInScreen = ({navigation}) => {
             }
 
               <View style={styles.row}>
-                  <View style={{color: '#a7a7a7', fontSize:16,alignSelf:'flex-start',right:30}}>
-                      <RadioButton
-                          color={'grey'}
-                          value="first"
-                          status={ checked === 'first' ? 'unchecked' : 'checked' }
-                          onPress={() => setChecked('first')}
+
+                      <CheckBox
+                          value={isSelected}
+                          onValueChange={setSelection}
+                          style={styles.checkbox}
                       />
-                  </View>
 
-                      <Text style={{color: '#a7a7a7', fontSize:16,right:30}}>Remember</Text>
 
-                  <TouchableOpacity>
-                      <Text style={{color: '#a7a7a7', fontSize:16,alignSelf:'flex-end',left:90}}
+                      <Text style={{color: '#a7a7a7', fontSize:width*0.04,flex:1}}>Remember</Text>
+
+                  <TouchableOpacity style={{flex:1,left:width*0.1}}>
+                      <Text style={{color: '#a7a7a7', fontSize:width*0.04,alignSelf:'flex-end'}}
                             onPress={()=>navigation.navigate('ForgotPasswordScreen')}>Forgot password?</Text>
                   </TouchableOpacity>
 
               </View>
 
-            <View style={styles.button}>
+
                 <TouchableOpacity
-                    style={styles.signIn}
+                    style={{resizeMode: 'stretch',width : width*0.9,alignItems: 'center',height : height*0.13,flex:1,paddingVertical:height*0.02}}
                     onPress={() => {__doSingIn( data)}}
                 >
-               <Image source={require('../assets/SignIn/SignInbutton.png')} style={{resizeMode: 'stretch',width : 400,height : 90}}/>
+               <Image source={require('../assets/SignIn/SignInbutton.png')}
+                      style={{resizeMode: 'stretch',width : width*0.98,alignItems: 'center',height : height*0.13}}/>
 
                 </TouchableOpacity>
-                <Text style={{color: '#a7a7a7', fontSize:16,alignItems: 'center',paddingVertical:10}}>Or</Text>
+
+                <Text style={{color: '#a7a7a7', fontSize:width*0.04,alignSelf: 'center',flex:1}}>Or</Text>
 
 
-            </View>
+
 
               <View style={styles.row}>
                   <TouchableOpacity onPress={()=>navigation.navigate('SplashScreen_Doctor')}>
-                      <Image source={require('../assets/SignIn/facebook_button.png')} style={{
-                          alignSelf: "flex-start",
-                          resizeMode: 'stretch',width : 170,height : 50,
-                          right : 30}}/>
+                      <Image source={require('../assets/SignIn/facebook_button.png')} style={{alignSelf: "flex-start",left:width*0.02,
+                          resizeMode: 'stretch',width : width*0.4,height : height*0.068
+                         }}/>
                   </TouchableOpacity>
+
                   <TouchableOpacity onPress={()=>navigation.navigate('SplashScreen_Appointments')}
-                                    style={{
-                                        resizeMode: 'stretch',width : 80,height : 70,alignItems: "flex-end",left:100}}>
+                                  >
                       <Image source={require('../assets/SignIn/google_button.png')} style={{
-                          resizeMode: 'stretch',width : 170,height : 50}} />
+                          resizeMode: 'stretch',width : width*0.4,height : height*0.068,left:width*0.07}} />
                   </TouchableOpacity>
               </View>
-          </Animatable.View>
-          <View style={styles.textPrivate}>
-              <Text style={styles.color_textPrivate}>
-                  Don't Have Account ?
-              </Text>
-              <Text style={ {fontWeight: 'bold',color:"#2d7ba7"}}
-                    onPress={()=>navigation.navigate('SignUpScreen')}>{" "} Create Account.</Text>
+              <View style={styles.textPrivate}>
+                  <Text style={styles.color_textPrivate}>
+                      Don't Have Account ?
+                  </Text>
+                  <Text style={ {fontWeight: 'bold',color:"#2d7ba7",fontSize:height*0.023}}
+                        onPress={()=>navigation.navigate('SignUpScreen')}>{" "} Create Account.</Text>
 
-          </View>
-          </ScrollView>
+              </View>
+
+          </Animatable.View>
+      </ScrollView>
+
 
 
       </View>
@@ -308,48 +310,54 @@ const styles = StyleSheet.create({
       backgroundColor: '#ffffff'
     },
     header: {
-        flex: 1,
-        paddingVertical: 20,
-        paddingHorizontal: 20,
-        paddingBottom: 50
+
+        flex: 2,
+        paddingVertical: height*0.05,
+        paddingHorizontal: width*0.05,
+
     },
     row: {
-        paddingHorizontal: 30,
+        flex:1,
+
         marginTop:0,
-        width:width,
+        width:width*0.8,
         flexDirection: "row",
         flexWrap: "wrap",
     },
     textPrivate: {
+        bottom:0,
         flexDirection: 'row',
         flexWrap: 'wrap',
-        marginBottom: height*0.08,
-        left:width*0.05
+        marginTop:height*0.07,
+
+        left:width*0.03
     },
     color_textPrivate: {
-        color: 'grey'
+        color: 'grey',
+        fontSize:height*0.023
     },
     footer: {
-        flex: 10,
-        backgroundColor: '#fff',
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
-        paddingHorizontal: 20,
+
+        flex: 8,
+        backgroundColor: '#ffffff',
+
+        paddingHorizontal: width*0.05
 
     },
     text_header: {
         color: '#2d7ba7',
-        marginBottom: 20,
-        fontSize: 35
+        paddingVertical: 20,
+        fontSize: width*0.09,
+        flex:1
     },
     text_footer: {
         color: '#05375a',
         fontSize: 18
     },
     action1: {
-
+        height:height*0.08,
         flexDirection: 'row',
-
+        width:width*0.9,
         marginBottom: 10,
         borderWidth : 1,
         borderTopLeftRadius: 10,
@@ -361,8 +369,8 @@ const styles = StyleSheet.create({
     },
     action2: {
 
-        flexDirection: 'row',
-
+        flex:1,
+        width:width*0.9,
         marginBottom: 30,
         borderWidth : 1,
         borderTopLeftRadius: 10,
@@ -382,10 +390,10 @@ const styles = StyleSheet.create({
     textInput: {
         flex: 1,
         marginTop: Platform.OS === 'ios' ? 0 : 4,
-
+        height:height*0.065,
         paddingLeft: 20,
         color: '#b1b1b1',
-        fontSize : 15
+        fontSize : height*0.025
     },
     errorMsg: {
         color: '#FF0000',
@@ -396,7 +404,8 @@ const styles = StyleSheet.create({
         marginTop: 50
     },
     signIn: {
-        width: '100%',
+        flex:1,
+
         height: 50,
         justifyContent: 'center',
         alignItems: 'center',
@@ -405,5 +414,11 @@ const styles = StyleSheet.create({
     textSign: {
         fontSize: 18,
         fontWeight: 'bold'
-    }
+    },
+    checkbox: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        height:height*0.035
+
+    },
   });

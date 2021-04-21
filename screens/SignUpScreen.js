@@ -9,7 +9,7 @@ import {
     Platform,
     StyleSheet,
     ScrollView,
-    StatusBar, Alert, Image,
+    StatusBar, Alert, Image,KeyboardAvoidingView,
 } from 'react-native';
 import validator from 'validator';
 import * as Animatable from 'react-native-animatable';
@@ -21,8 +21,15 @@ import auth from "@react-native-firebase/auth"
 import {AuthContext} from '../components/context';
 import EmailValidator from 'email-validator-net'
 import firestore from '@react-native-firebase/firestore';
+import PhoneInput from "react-native-phone-number-input";
 import SignInScreen from './SignInScreen';
+
 const SignUpScreen = ({navigation}) => {
+    const [value, setValue] = React.useState("");
+    const [formattedValue, setFormattedValue] = React.useState("");
+    const [valid, setValid] = React.useState(false);
+    const [showMessage, setShowMessage] = React.useState(false);
+    const phoneInput = React.forwardRef<PhoneInput>(null);
     const usersCollection = firestore().collection('patient');
     const [data, setData] = React.useState({
         firstname:'',
@@ -236,21 +243,22 @@ const SignUpScreen = ({navigation}) => {
 
     return (
       <View style={styles.container}>
-          <StatusBar backgroundColor='#ffff' barStyle="dark-content"/>
-          <View style={{paddingHorizontal:20,paddingVertical:10}}>
-              <TouchableOpacity onPress={()=>navigation.navigate('SignInScreen')}>
-                  <Image source={require("../assets/SignUp/back-arrow.png")} style={{resizeMode: 'stretch',width:18,height:30}}/>
-              </TouchableOpacity>
-          </View>
-        <View style={styles.header}>
-            <Text style={styles.text_header}>Sign Up</Text>
-        </View>
-        <Animatable.View
-            animation="fadeInUpBig"
-            style={styles.footer}
-        >
-            <ScrollView>
 
+              <StatusBar backgroundColor='#fff' barStyle="dark-content"/>
+          <ScrollView >
+
+
+
+              <Animatable.View
+                  animation="fadeInUpBig"
+                  style={styles.footer}
+              >
+
+
+                  <Text style={{color: '#2d7ba7',
+                      marginBottom: height*0.03,
+                      fontSize: width*0.09,
+                      }}>Sign Up</Text>
                 <View style={styles.action2}>
 
                     <TextInput
@@ -324,6 +332,22 @@ const SignUpScreen = ({navigation}) => {
                     </Animatable.View>
                 }
 
+                  <View style={styles.action2}>
+
+                      <PhoneInput
+
+                          defaultValue={value}
+                          defaultCode="TN"
+
+                          onChangeText={(text) => {
+                              setValue(text);
+                          }}
+                          onChangeFormattedText={(text) => {
+                              setFormattedValue(text);
+                          }}
+                          textContainerStyle={{paddingVertical: 0,height:height*0.07,backgroundColor:'#fff'}}
+                      />
+                  </View>
 
             <View style={styles.action2}>
 
@@ -337,6 +361,7 @@ const SignUpScreen = ({navigation}) => {
                 />
                 <TouchableOpacity
                     onPress={updateSecureTextEntry}
+                    style={{marginTop:15}}
                 >
                     {data.secureTextEntry ?
                     <Feather
@@ -368,6 +393,7 @@ const SignUpScreen = ({navigation}) => {
                 />
                 <TouchableOpacity
                     onPress={updateConfirmSecureTextEntry}
+                    style={{marginTop:15}}
                 >
                     {data.secureTextEntry ?
                     <Feather
@@ -385,6 +411,7 @@ const SignUpScreen = ({navigation}) => {
                 </TouchableOpacity>
 
             </View>
+
                 { data.check_ConfirmPasswordInputChange ? null :
                     <Animatable.View animation="fadeInLeft" duration={500}>
                         <Text style={styles.errorMsg}>password must be the same</Text>
@@ -392,61 +419,66 @@ const SignUpScreen = ({navigation}) => {
                 }
 
 
-                <View style={styles.button}>
                     <TouchableOpacity
-                        style={styles.signIn}
+                        style={{resizeMode: 'stretch',width : width*0.9,alignItems: 'center',height : height*0.12,flex:1}}
                         onPress={() => {__doSignUp ( data )}}
                     >
-                        <Image source={require('../assets/SignUp/Button.png')} style={{resizeMode: 'stretch',width : 400,height : 90}}/>
+                        <Image source={require('../assets/SignUp/Button.png')}    style={{resizeMode: 'stretch',width : width*0.98,alignItems: 'center',height : height*0.12}}/>
 
                     </TouchableOpacity>
 
 
-                </View>
-            </ScrollView>
+
+
+
 
         </Animatable.View>
+
+          </ScrollView>
       </View>
     );
 };
 
 export default SignUpScreen;
-
+const {height} = Dimensions.get("screen");const {width} = Dimensions.get("screen");
 const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#ffffff'
     },
     header: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        paddingHorizontal: 20,
-        paddingBottom: 50
+
+        flex: 2,
+        paddingVertical: height*0.03,
+
+
     },
     action2: {
-
+        flex : 1,
         flexDirection: 'row',
-
-        marginBottom:20,
+        width:width*0.9,
+        marginBottom: height*0.02,
         borderWidth : 1,
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         borderBottomLeftRadius: 10,
         borderBottomRightRadius: 10,
         borderColor: '#cfcfcf',
-        paddingBottom: 1.5
+
     },
     footer: {
-        flex: 10,
-        backgroundColor: '#fff',
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
-        paddingHorizontal: 20,
+
+
+        backgroundColor: '#ffffff',
+
+        paddingHorizontal: width*0.05
+
     },
     text_header: {
         color: '#2d7ba7',
-
-        fontSize: 30
+        paddingVertical: 10,
+        fontSize: width*0.09,
+        flex:1
     },
     text_footer: {
         color: '#05375a',
@@ -463,10 +495,10 @@ const styles = StyleSheet.create({
     textInput: {
         flex: 1,
         marginTop: Platform.OS === 'ios' ? 0 : 4,
-
+        height:height*0.065,
         paddingLeft: 20,
         color: '#b1b1b1',
-        fontSize : 15
+        fontSize : height*0.025
     },
     button: {
         alignItems: 'center',

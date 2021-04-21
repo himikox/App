@@ -35,7 +35,7 @@ const SplashScreen_Appointments = ({navigation}) => {
                 style={[styles.footer, {
                     backgroundColor: colors.background
                 }]}
-                animation="fadeInUpBig"
+                animation="bounceInUp"
             >
                 <Text style={[styles.title, {
                     color: colors.text
@@ -43,14 +43,14 @@ const SplashScreen_Appointments = ({navigation}) => {
                 <Text style={styles.text}>
                     Book appointments and get best treatment
                     on one tap</Text>
-                <View style={styles.button}>
+                <View style={{flex: 1}}>
 
 
 
                 </View>
-                <TouchableOpacity onPress={()=>navigation.navigate('SignInScreen')}>
+                <TouchableOpacity onPress={()=>navigation.navigate('SignInScreen')} style={{flex:1}}>
                 <Image source={require('../assets/gettingstarted.png')} style={{alignSelf: 'center',
-                    resizeMode: 'stretch',width : 375,height : 90,marginTop:70}}>
+                    resizeMode: 'stretch',width : width*0.9,height : height*0.12}}>
 
                 </Image>
                 </TouchableOpacity>
@@ -81,9 +81,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
-
-        paddingHorizontal: 30,
-        height : height*0.45
+        flex:2,
 
     },
     logo: {
@@ -92,15 +90,18 @@ const styles = StyleSheet.create({
         height: height * 0.7
     },
     title: {
-        paddingVertical :30,
+
+        paddingVertical :height*0.05,
         color: '#05375a',
-        fontSize: 30,
+        fontSize: width*0.09,
         textAlign: "center"
     },
     text: {
         color: 'grey',
         marginTop:5,
         textAlign: "center",
+        fontSize: width*0.045,
+        paddingHorizontal:width*0.06
 
     },
     button: {

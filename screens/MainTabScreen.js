@@ -2,7 +2,7 @@ import React from 'react';
 
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-
+import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import HomeScreen from './HomeScreen';
@@ -22,22 +22,26 @@ const MainTabScreen = () => (
       activeColor="#fff"
 
     >
+        <LinearGradient
+            colors={['#f5f5f5', '#DBDBDB']}
+            start={[1, 0]}
+            end={[0, 0]}
+        >
       <Tab.Screen
         name="Home"
         component={HomeStackScreen}
         options={{
-          tabBarLabel: 'Home',
+
           tabBarColor: '#3b8abd',
           tabBarIcon: ({ color }) => (
             <Icon name="ios-home" color={color} size={26} />
           ),
         }}
-      >
-          <ImageBackground
-              source={require('../assets/header.png')}
-              style={{width: '100%', height: 80}}
-          />
-      </Tab.Screen>
+      />
+
+
+
+        </LinearGradient>
       <Tab.Screen
         name="Notifications"
         component={DetailsStackScreen}

@@ -39,6 +39,7 @@ import ProfileScreen from './screens/ProfileScreen';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {createStackNavigator} from '@react-navigation/stack';
 import HomeScreen from './screens/HomeScreen';
+import {LinearGradient} from 'react-native-svg';
 const HomeStack = createStackNavigator();
 const DetailsStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
@@ -153,7 +154,16 @@ function App ({route}) {
 }
 
 export default App;
-
+const GradientHeader = props => (
+    <View style={{ backgroundColor: '#eee' }}>
+        <LinearGradient
+            colors={['red', 'blue']}
+            style={[StyleSheet.absoluteFill, { height: Header.HEIGHT }]}
+        >
+            <Header {...props} />
+        </LinearGradient>
+    </View>
+)
 const   ProfileStackScreen = ({navigation}) => (
     <ProfileStack.Navigator screenOptions={{
       headerStyle: {
@@ -175,7 +185,8 @@ const   ProfileStackScreen = ({navigation}) => (
 const HomeStackScreen = ({navigation}) => (
     <HomeStack.Navigator screenOptions={{
       headerStyle: {
-        backgroundColor: '#3b8abd',
+        backgroundColor: ('#3b8abd'),
+
       },
       headerTintColor: '#fff',
       headerTitleStyle: {

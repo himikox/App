@@ -35,32 +35,31 @@ const SplashScreen_Doctor = ({navigation}) => {
                 style={[styles.footer, {
                     backgroundColor: colors.background
                 }]}
-                animation="fadeInUpBig"
+                animation="bounceInUp"
             >
                 <Text style={[styles.title, {
                     color: colors.text
                 }]}>DOCTORS</Text>
                 <Text style={styles.text}>
-                    Find expert doctors for perticular problem
+                    Find expert doctors for particular problem
                     on one tap</Text>
-                <View style={styles.button}>
+               <View style={{flex:3}}>
 
-
-
-                </View>
+               </View>
                 <View style={styles.row}>
-
+                    <Image source={require('../assets/felsadoctors.png')} style={{alignSelf: 'center',marginBottom:'5%',
+                        resizeMode: 'stretch',width : width*0.2,height : height*0.015,left:width*0.4}}/>
                     <TouchableOpacity onPress={()=>navigation.navigate('SplashScreen_Medicine')}
                                       style={{
-                                          resizeMode: 'stretch',width : 80,height : 70,alignItems: "flex-end",left:width*0.68}}>
+                                          resizeMode: 'stretch',width : 80,height : 70,left:width*0.63}}>
                         <Image source={require('../assets/fleshymin.png')} style={{
-                            resizeMode: 'stretch',width : width*0.2,height : height*0.1,alignItems: "flex-end",left : width*0.06}} />
+                            resizeMode: 'stretch',width : width*0.2,height : height*0.1}} />
                     </TouchableOpacity>
 
                 </View>
-                <Image source={require('../assets/felsadoctors.png')} style={{alignSelf: 'center',marginBottom:'5%',
-                resizeMode: 'stretch',width : width*0.2,height : height*0.015}}/>
+
             </Animatable.View>
+
         </View>
     );
 };
@@ -81,8 +80,9 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     row: {
+        flex:3,
+        marginBottom:height*0.2,
         marginTop: height*0.1,
-        width:width,
         flexDirection: "row",
         flexWrap: "wrap",
     },
@@ -92,9 +92,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
+        flex:2,
 
-        paddingHorizontal: 30,
-        height : height*0.50
+
 
     },
     logo: {
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
         height: height * 0.7
     },
     title: {
-        paddingVertical :30,
+        paddingVertical :height*0.05,
         color: '#05375a',
         fontSize: 30,
         textAlign: "center"
@@ -111,7 +111,9 @@ const styles = StyleSheet.create({
     text: {
         color: 'grey',
         marginTop:5,
-        textAlign: "center"
+        textAlign: "center",
+        fontSize: width*0.045,
+        paddingHorizontal:width*0.06
     },
     button: {
         alignItems: 'flex-end',

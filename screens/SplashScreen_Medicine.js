@@ -37,7 +37,7 @@ const SplashScreen_Medicine = ({navigation}) => {
                 style={[styles.footer, {
                     backgroundColor: colors.background
                 }]}
-                animation="fadeInUpBig"
+                animation="bounceInUp"
             >
                 <Text style={[styles.title, {
                     color: colors.text
@@ -45,7 +45,7 @@ const SplashScreen_Medicine = ({navigation}) => {
                 <Text style={styles.text}>
                     Alopathic, Ayurvedic and all type of medicines
                     can bought from here </Text>
-                <View style={styles.button}>
+                <View style={{flex:3}}>
 
 
 
@@ -53,22 +53,22 @@ const SplashScreen_Medicine = ({navigation}) => {
                 <View style={styles.row}>
                     <TouchableOpacity onPress={()=>navigation.navigate('SplashScreen_Doctor')}
                                       style={{
-                                          resizeMode: 'stretch',width : width*0.2,height : height*0.1,alignItems: "flex-start"}}>
+                                          resizeMode: 'stretch',width : width*0.2,height : height*0.1}}>
                         <Image source={require('../assets/fleshysar.png')} style={{
                             alignSelf: "flex-start",
-                            resizeMode: 'stretch',width : width*0.18,height : height*0.09,right:width*0.1
+                            resizeMode: 'stretch',width : width*0.16,height : height*0.09
                             }}/>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={()=>navigation.navigate('SplashScreen_Appointments')}
                                       style={{
-                                          resizeMode: 'stretch',width : width*0.2,height : height*0.1,alignItems: "flex-end",left:width*0.55}}>
+                                          resizeMode: 'stretch',width : width*0.2,height : height*0.1,left:width*0.62}}>
                         <Image source={require('../assets/fleshymin.png')} style={{
                             resizeMode: 'stretch',width : width*0.2,height : height*0.1}} />
                     </TouchableOpacity>
-
+                    <Image source={require('../assets/felsamedicine.png')} style={{alignSelf: 'center',marginBottom:'5%',
+                        resizeMode: 'stretch',width : width*0.2,height : height*0.015}}/>
                 </View>
-                <Image source={require('../assets/felsamedicine.png')} style={{alignSelf: 'center',marginBottom:'5%',
-                    resizeMode: 'stretch',width : width*0.2,height : height*0.015}}/>
+
 
             </Animatable.View>
         </View>
@@ -86,7 +86,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff'
     },
     row: {
-        marginTop :height*0.1,
+        marginBottom:height*0.1,
+        flex:1,
         width:width,
         flexDirection: "row",
         flexWrap: "wrap",
@@ -101,9 +102,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
-
-        paddingHorizontal: 30,
-        height : height*0.50
+        flex:2,
 
     },
     logo: {
@@ -112,15 +111,17 @@ const styles = StyleSheet.create({
         height: height * 0.7
     },
     title: {
-        paddingVertical :30,
+        paddingVertical :height*0.05,
         color: '#05375a',
-        fontSize: 30,
+        fontSize: width*0.09,
         textAlign: "center"
     },
     text: {
         color: 'grey',
         marginTop:5,
-        textAlign: "center"
+        textAlign: "center",
+        fontSize: width*0.045,
+        paddingHorizontal:width*0.06
     },
     button: {
         alignItems: 'flex-end',

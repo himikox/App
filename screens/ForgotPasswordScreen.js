@@ -238,27 +238,21 @@ const ForgotPasswordScreen = ({navigation}) => {
     return (
         <View style={styles.container}>
             <StatusBar backgroundColor='#ffff' barStyle="dark-content"/>
-            <View style={{paddingHorizontal:20,paddingVertical:30}}>
-                <TouchableOpacity onPress={()=>navigation.navigate('SignInScreen')}>
-                    <Image source={require("../assets/SignUp/back-arrow.png")} style={{resizeMode: 'stretch',width:18,height:30}}/>
-                </TouchableOpacity>
-            </View>
-            <View style={styles.header}>
-                <Text style={styles.text_header}>Forgot Password</Text>
-            </View>
-            <View style={styles.textPrivate}>
-                <Text style={styles.color_textPrivate}>
-                    We just need your register e-mail ID to send reset
-                    link
-                </Text>
-            </View>
+
+
+
             <Animatable.View
                 animation="fadeInUpBig"
                 style={styles.footer}
             >
-                <ScrollView>
+                <Text style={styles.text_header}>Forgot Password</Text>
 
-
+                <View style={styles.textPrivate}>
+                    <Text style={styles.color_textPrivate}>
+                        We just need your register e-mail ID to send reset
+                        link
+                    </Text>
+                </View>
 
                     <View style={styles.action2}>
 
@@ -290,18 +284,17 @@ const ForgotPasswordScreen = ({navigation}) => {
 
 
 
-                    <View style={styles.button}>
+
                         <TouchableOpacity
-                            style={styles.signIn}
+                            style={{resizeMode: 'stretch',width : width*0.9,alignItems: 'center',height : height*0.13,flex:1}}
                             onPress={() => {__doSignUp ( data )}}
+
                         >
-                            <Image source={require('../assets/ForgotPassword/resetpassword.png')} style={{resizeMode: 'stretch',width : 400,height : 90}}/>
+                            <Image source={require('../assets/ForgotPassword/resetpassword.png')} style={{resizeMode: 'stretch',width : width*0.98,alignItems: 'center',height : height*0.13}}/>
 
                         </TouchableOpacity>
 
 
-                    </View>
-                </ScrollView>
 
             </Animatable.View>
         </View>
@@ -317,15 +310,16 @@ const styles = StyleSheet.create({
     },
     header: {
         flex: 1,
-        justifyContent: 'flex-end',
-        paddingHorizontal: 20,
-        paddingBottom: 10
+        paddingVertical: height*0.05,
+        paddingHorizontal: width*0.05,
     },
     action2: {
 
-        flexDirection: 'row',
 
 
+        height:height*0.08,
+        width:width*0.9,
+        marginBottom: 20,
         borderWidth : 1,
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
@@ -335,11 +329,10 @@ const styles = StyleSheet.create({
         paddingBottom: 1.5
     },
     footer: {
-        flex: 5,
-        backgroundColor: '#fff',
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
-        paddingHorizontal: 20,
+        flex: 15,
+        backgroundColor: '#ffffff',
+
+        paddingHorizontal: width*0.05
     },
     text_header: {
         color: '#2d7ba7',
@@ -361,10 +354,10 @@ const styles = StyleSheet.create({
     textInput: {
         flex: 1,
         marginTop: Platform.OS === 'ios' ? 0 : 4,
-
+        height:height*0.065,
         paddingLeft: 20,
         color: '#b1b1b1',
-        fontSize : 15
+        fontSize : height*0.025
     },
     button: {
         alignItems: 'center',
@@ -384,11 +377,15 @@ const styles = StyleSheet.create({
     textPrivate: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        marginBottom: height*0.08,
-        left:width*0.05
+        paddingVertical: height*0.04,
+
+
+
+
     },
     color_textPrivate: {
-        color: 'grey'
+        color: 'grey',
+        fontSize:height*0.02
     },
     actionError: {
         flexDirection: 'row',
