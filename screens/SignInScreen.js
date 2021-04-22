@@ -22,7 +22,7 @@ import { AuthContext } from '../components/context';
 import ForgotPasswordScreen from './ForgotPasswordScreen';
 import Users from '../model/users';
 import validator from 'validator';
-
+import Realm from "realm";
 const SignInScreen = ({navigation}) => {
     console.log("i'm here1");
     const [isSelected, setSelection] = React.useState(false);
@@ -34,7 +34,11 @@ const SignInScreen = ({navigation}) => {
         isValidUser: true,
         isValidPassword: true,
     });
-
+    const appId = 'doctorsina-ubkdy';
+    const appConfig = {
+        id: appId,
+        timeout: 10000,
+    };
     const { colors } = useTheme();
 
    // const { signIn } = React.useContext(AuthContext);
@@ -101,10 +105,13 @@ const SignInScreen = ({navigation}) => {
     const __doSingIn = async (data) => {
         if(data.isValidUser)
         {
+
             console.log("done");
             // __doCreateUser(data.mail,data.password);
             try {
-
+                const credentials = Realm.Credentials.emailPassword(
+                    data.mail, data.password
+                );
                 let response = await auth().signInWithEmailAndPassword(data.mail, data.password).then(
 
                   function() {
@@ -179,17 +186,7 @@ const SignInScreen = ({navigation}) => {
                     onChangeText={(val) => textInputChange(val)}
                     onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
                 />
-                {data.check_textInputChange ?
-                <Animatable.View
-                    animation="bounceIn"
-                >
-                    <Feather
-                        name="check-circle"
-                        color="green"
-                        size={20}
-                    />
-                </Animatable.View>
-                : null}
+
             </View>
             { data.isValidUser ? null :
             <Animatable.View animation="fadeInLeft" duration={500}>

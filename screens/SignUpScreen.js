@@ -10,6 +10,7 @@ import {
     StyleSheet,
     ScrollView,
     StatusBar, Alert, Image,KeyboardAvoidingView,
+    Picker,
 } from 'react-native';
 import validator from 'validator';
 import * as Animatable from 'react-native-animatable';
@@ -23,12 +24,14 @@ import EmailValidator from 'email-validator-net'
 import firestore from '@react-native-firebase/firestore';
 import PhoneInput from "react-native-phone-number-input";
 import SignInScreen from './SignInScreen';
-
+import Realm from "realm";
+import {useTheme} from 'react-native-paper';
 const SignUpScreen = ({navigation}) => {
     const [value, setValue] = React.useState("");
     const [formattedValue, setFormattedValue] = React.useState("");
     const [valid, setValid] = React.useState(false);
     const [showMessage, setShowMessage] = React.useState(false);
+    const [selectedValue, setSelectedValue] = React.useState("Patient");
     const phoneInput = React.forwardRef<PhoneInput>(null);
     const usersCollection = firestore().collection('patient');
     const [data, setData] = React.useState({
@@ -46,6 +49,12 @@ const SignUpScreen = ({navigation}) => {
         confirm_secureTextEntry: true,
         isValidUser : false,
     });
+    const appId = 'doctorsina-ubkdy'; // Set Realm app ID here.
+    const appConfig = {
+        id: appId,
+        timeout: 10000,
+    };
+    const { colors } = useTheme();
     //const { signUp } = React.useContext(AuthContext);
     const textInputChange = (val) => {
         if( val.trim().length >= 0 ) {
@@ -65,6 +74,7 @@ const SignUpScreen = ({navigation}) => {
             });
         }
     }
+
     const LastNameChange = (val) => {
         if( val.trim().length >= 1 ) {
             setData({
@@ -186,37 +196,34 @@ const SignUpScreen = ({navigation}) => {
         if(data.isValidUser) {
             console.log("signup");
             try {
-               const validatorInstance = EmailValidator("ev-d6eee678ad5edfd7954126bb2941ee21")
-               const responseObject = await validatorInstance(data.mail)
-               const x = responseObject.statusCode.toString() ;
-                console.log(x);
-                if ( x === '200' || x === '207' || x=== '215'  ) {
-
+            //   const validatorInstance = EmailValidator("ev-d6eee678ad5edfd7954126bb2941ee21")
+            //   const responseObject = await validatorInstance(data.mail)
+            //   const x = responseObject.statusCode.toString() ;
+            //    console.log(x);
+            //    if ( x === '200' || x === '207' || x=== '215'  ) {
+               // let user;
+              //  const app = new Realm.App(appConfig);
+              //  const credentials = Realm.Credentials.emailPassword(
+              //      data.mail, data.password
+             //   );
                     let response = await auth().createUserWithEmailAndPassword(data.mail, data.password)
                     const us = auth().currentUser;
                     let r = await us.sendEmailVerification();
+            //    let response =  await app.emailPasswordAuth.registerUser(data.mail, data.password);
+                console.log(response);
+                    if (response ) {
 
-
-                    if (response && response.user) {
-                      await  firestore()
-                            .collection('patient')
-                          .doc(us.uid)
-                          .set({
-                              mail : data.mail,
-                              firstname: data.firstname ,
-                              lastname : data.lastname,
-                            })
-                            .then(() => {
                                 console.log('User added!');
-                            });
+
+
                         // signUp(data.mail,'aa');
                         Alert.alert("Success ✅", "Email Sent.")
                     }
-                }
-        else {
-                    Alert.alert("Error", "Please Enter a Valid mail")
+             //   }
+     //   else {
+            //        Alert.alert("Error", "Please Enter a Valid mail")
 
-               }
+           //    }
                 }
             catch
                 (e)
@@ -262,8 +269,10 @@ const SignUpScreen = ({navigation}) => {
                 <View style={styles.action2}>
 
                     <TextInput
-                        placeholder="Your First Name"
-                        style={styles.textInput}
+                        placeholder="First Name"
+                        style={[styles.textInput, {
+                            color: colors.text
+                        }]}
                         autoCapitalize="none"
                         onChangeText={(val) => FirstNameChange(val)}
                         onEndEditing={(e)=> FirstNameChange(e.nativeEvent.text)}
@@ -287,8 +296,10 @@ const SignUpScreen = ({navigation}) => {
                 <View style={styles.action2}>
 
                     <TextInput
-                        placeholder="Your Last Name"
-                        style={styles.textInput}
+                        placeholder="Last Name"
+                        style={[styles.textInput, {
+                            color: colors.text
+                        }]}
                         autoCapitalize="none"
                         onChangeText={(val) => LastNameChange(val)}
                        onEndEditing={(e)=>LastNameChange(e.nativeEvent.text)}
@@ -312,8 +323,10 @@ const SignUpScreen = ({navigation}) => {
             <View style={styles.action2}>
 
                 <TextInput
-                    placeholder="Your eMail"
-                    style={styles.textInput}
+                    placeholder="E-Mail"
+                    style={[styles.textInput, {
+                        color: colors.text
+                    }]}
                     autoCapitalize="none"
                     onChangeText={(val) => textInputChange(val)}
                     onEndEditing={(e)=>handleValidMail(e.nativeEvent.text)}
@@ -352,9 +365,11 @@ const SignUpScreen = ({navigation}) => {
             <View style={styles.action2}>
 
                 <TextInput
-                    placeholder="Your Password"
+                    placeholder="Password"
                     secureTextEntry={data.secureTextEntry ? true : false}
-                    style={styles.textInput}
+                    style={[styles.textInput, {
+                        color: colors.text
+                    }]}
                     autoCapitalize="none"
                     onChangeText={(val) => handlePasswordChange(val)}
                     onEndEditing={(e)=>handlePasswordChange(e.nativeEvent.text)}
@@ -384,9 +399,11 @@ const SignUpScreen = ({navigation}) => {
             <View style={styles.action2}>
 
                 <TextInput
-                    placeholder="Confirm Your Password"
+                    placeholder="Confirm Password"
                     secureTextEntry={data.confirm_secureTextEntry ? true : false}
-                    style={styles.textInput}
+                    style={[styles.textInput, {
+                        color: colors.text
+                    }]}
                     autoCapitalize="none"
                     onChangeText={(val) => handleConfirmPasswordChange(val)}
                     onEndEditing={(e)=>handleConfirmPasswordChange(e.nativeEvent.text)}
@@ -395,7 +412,7 @@ const SignUpScreen = ({navigation}) => {
                     onPress={updateConfirmSecureTextEntry}
                     style={{marginTop:15}}
                 >
-                    {data.secureTextEntry ?
+                    {data.confirm_secureTextEntry ?
                     <Feather
                         name="eye-off"
                         color="grey"
@@ -409,14 +426,35 @@ const SignUpScreen = ({navigation}) => {
                     />
                     }
                 </TouchableOpacity>
-
-            </View>
-
                 { data.check_ConfirmPasswordInputChange ? null :
                     <Animatable.View animation="fadeInLeft" duration={500}>
                         <Text style={styles.errorMsg}>password must be the same</Text>
                     </Animatable.View>
                 }
+
+            </View>
+                  <View style={styles.action2}>
+                  <Picker
+                      mode = 'dropdown'
+                      selectedValue={selectedValue}
+                      style={{flex: 1,
+                          marginTop: Platform.OS === 'ios' ? 0 : 4,
+                          height:height*0.065,
+                          marginLeft: 18,
+                          color: 'grey',
+
+                          fontSize : height*0.03}}
+
+                      onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
+
+                  >
+                      <Picker.Item label="Patient" value="Patient" />
+                      <Picker.Item label="Doctor" value="Doctor" />
+                      <Picker.Item label="health professional" value="health_professional" />
+                  </Picker>
+                  </View>
+
+
 
 
                     <TouchableOpacity
@@ -426,6 +464,7 @@ const SignUpScreen = ({navigation}) => {
                         <Image source={require('../assets/SignUp/Button.png')}    style={{resizeMode: 'stretch',width : width*0.98,alignItems: 'center',height : height*0.12}}/>
 
                     </TouchableOpacity>
+
 
 
 

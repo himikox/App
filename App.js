@@ -59,6 +59,7 @@ function App ({route}) {
     userToken: null,
   };
 
+
   const CustomDefaultTheme = {
     ...NavigationDefaultTheme,
     ...PaperDefaultTheme,
@@ -92,6 +93,7 @@ function App ({route}) {
       const toggleTheme= () => {
       setIsDarkTheme( isDarkTheme => !isDarkTheme );
     }
+
 
 
 
