@@ -23,6 +23,7 @@ import ForgotPasswordScreen from './ForgotPasswordScreen';
 import Users from '../model/users';
 import validator from 'validator';
 import Realm from "realm";
+import { LoginManager, AccessToken } from 'react-native-fbsdk';
 const SignInScreen = ({navigation}) => {
     console.log("i'm here1");
     const [isSelected, setSelection] = React.useState(false);
@@ -102,6 +103,42 @@ const SignInScreen = ({navigation}) => {
             });
         }
     }
+    const __onFacebookButtonPress = async()=>{
+
+        try {
+             let result =  await LoginManager.logInWithPermissions([
+                'public_profile',
+                'email',
+            ]);
+
+            if (result.isCancelled) {
+                throw 'User cancelled the login process';
+            }
+            let data =  await AccessToken.getCurrentAccessToken();
+
+            if (!data) {
+                throw 'Something went wrong obtaining access token';
+            }
+
+            const firebaseCredential = await auth.FacebookAuthProvider.credential(
+                data.accessToken,
+            );
+
+            const fbUserObj = await auth().signInWithCredential(firebaseCredential);
+
+        } catch (error) {
+            if (error.code === 'auth/account-exists-with-different-credential') {
+                Alert.alert('Email already registered');
+            } else if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+                Alert.alert('Sign in cancelled');
+            } else if (error.code === statusCodes.IN_PROGRESS) {
+                Alert.alert('Sign in is already in progress');
+            } else {
+                Alert.alert('Issue creating account', error.message);
+            }
+        }
+
+    }
     const __doSingIn = async (data) => {
         if(data.isValidUser)
         {
@@ -109,9 +146,7 @@ const SignInScreen = ({navigation}) => {
             console.log("done");
             // __doCreateUser(data.mail,data.password);
             try {
-                const credentials = Realm.Credentials.emailPassword(
-                    data.mail, data.password
-                );
+
                 let response = await auth().signInWithEmailAndPassword(data.mail, data.password).then(
 
                   function() {
@@ -268,7 +303,9 @@ const SignInScreen = ({navigation}) => {
 
 
               <View style={styles.row}>
-                  <TouchableOpacity onPress={()=>navigation.navigate('SplashScreen_Doctor')}>
+                  <TouchableOpacity onPress={()=> {
+                      __onFacebookButtonPress();
+                  }}>
                       <Image source={require('../assets/SignIn/facebook_button.png')} style={{alignSelf: "flex-start",left:width*0.02,
                           resizeMode: 'stretch',width : width*0.4,height : height*0.068
                          }}/>
