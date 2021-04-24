@@ -129,7 +129,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.rnv5"
+        applicationId "com.doctorsina.rnv5"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

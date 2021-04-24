@@ -22,23 +22,20 @@ import {AuthContext} from '../components/context';
 import EmailValidator from 'email-validator-net'
 import firestore from '@react-native-firebase/firestore';
 import SignInScreen from './SignInScreen';
+import {useTheme} from 'react-native-paper';
 
 const ForgotPasswordScreen = ({navigation}) => {
+    const { colors } = useTheme();
     const usersCollection = firestore().collection('patient');
+    const [email, setEmail] = React.useState('');
+    const [showLoading, setShowLoading] = React.useState(false);
     const [data, setData] = React.useState({
-        firstname:'',
-        lastname:'',
         mail: '',
         password: '',
-        confirm_password: '',
-        check_textInputChange: true,
-        check_passwordInputChange: true,
-        check_ConfirmPasswordInputChange: true,
-        check_FirstNameChange: true,
-        check_LastNameChange: true,
+        check_textInputChange: false,
         secureTextEntry: true,
-        confirm_secureTextEntry: true,
-        isValidUser : false,
+        isValidUser: true,
+        isValidPassword: true,
     });
     //const { signUp } = React.useContext(AuthContext);
     const textInputChange = (val) => {
@@ -55,92 +52,26 @@ const ForgotPasswordScreen = ({navigation}) => {
                 mail: val,
                 check_textInputChange: false,
                 isValidUser: false
-
             });
         }
     }
-    const LastNameChange = (val) => {
-        if( val.trim().length >= 1 ) {
+    const handleValidUser = (val) => {
+        if( validator.isEmail(val)) {
+            console.log("email valide");
             setData({
+
                 ...data,
-                lastname: val,
-                check_LastNameChange: true,
                 isValidUser: true
             });
         } else {
+            console.log("emailpas valide");
+
+
             setData({
                 ...data,
-                lastname: val,
-                check_LastNameChange: false,
                 isValidUser: false
-
             });
         }
-    }
-    const FirstNameChange = (val) => {
-        if( val.trim().length >= 4 ) {
-            setData({
-                ...data,
-                firstname: val,
-                check_FirstNameChange: true,
-                isValidUser: true
-            });
-        } else {
-            setData({
-                ...data,
-                firstname: val,
-                check_FirstNameChange: false,
-                isValidUser: false
-
-            });
-        }
-    }
-    const handleConfirmPasswordChange = (val) => {
-        if(val == data.password)
-        {
-            setData({
-                ...data,
-                // password: val,
-                check_ConfirmPasswordInputChange : true,
-                isValidUser: true
-            });
-        } else {
-            setData({
-                ...data,
-                //  password: val,
-                check_ConfirmPasswordInputChange : false,
-                isValidUser: false
-
-            });
-        }
-
-    }
-
-    const handlePasswordChange = (val) => {
-        if(val >4) {
-            setData({
-                ...data,
-                password: val,
-                isValidUser: true,
-                check_passwordInputChange : true
-            });
-        }
-        else {
-            setData({
-                ...data,
-                password: val,
-                check_passwordInputChange : false,
-                isValidUser: false
-
-            });
-        }
-    }
-
-    const updateSecureTextEntry = () => {
-        setData({
-            ...data,
-            secureTextEntry: !data.secureTextEntry
-        });
     }
     const handleValidMail = (val) => {
         if( validator.isEmail(val)) {
@@ -166,73 +97,23 @@ const ForgotPasswordScreen = ({navigation}) => {
         }
     }
 
-    const updateConfirmSecureTextEntry = () => {
-        setData({
-            ...data,
-            confirm_secureTextEntry: !data.confirm_secureTextEntry
-        });
-    }
-    const SignUpHandle = (userName, password) => {
-        console.log("signup");
 
-    }
-    const __doSignUp = async(data) => {
+
+    const __doReset = async(data) => {
         if(data.isValidUser) {
-            console.log("signup");
-            try {
-                const validatorInstance = EmailValidator("ev-d6eee678ad5edfd7954126bb2941ee21")
-                const responseObject = await validatorInstance(data.mail)
-                const x = responseObject.statusCode.toString() ;
-                console.log(x);
-                if ( x === '200' || x === '207' || x=== '215'  ) {
 
-                    let response = await auth().createUserWithEmailAndPassword(data.mail, data.password)
-                    const us = auth().currentUser;
-                    let r = await us.sendEmailVerification();
+            setShowLoading(true);
 
+                let response = await auth().sendPasswordResetEmail(data.mail).then(() => Alert.alert('', 'Your password resset mail has been sent'))
+                    .catch(error => Alert.alert('Error', error.message));
 
-                    if (response && response.user) {
-                        await  firestore()
-                            .collection('patient')
-                            .doc(us.uid)
-                            .set({
-                                mail : data.mail,
-                                firstname: data.firstname ,
-                                lastname : data.lastname,
-                            })
-                            .then(() => {
-                                console.log('User added!');
-                            });
-                        // signUp(data.mail,'aa');
-                        Alert.alert("Success ✅", "Email Sent.")
-                    }
-                }
-                else {
-                    Alert.alert("Error", "Please Enter a Valid mail")
-
-                }
-            }
-            catch
-                (e)
-            {
-                Alert.alert("Error✅", e.message);
-            }
-            console.log("done");
-            // __doCreateUser(data.mail,data.password);
 
         }
 
 
 
     }
-    const __doCreateUser = async (email, password) => {
-        try {
-            let response = await auth().createUserWithEmailAndPassword(email, password)
-            signUp();
-        } catch (e) {
-            console.error(e.message)
-        }
-    }
+
 
 
     return (
@@ -254,43 +135,35 @@ const ForgotPasswordScreen = ({navigation}) => {
                     </Text>
                 </View>
 
-                    <View style={styles.action2}>
+                <View style={styles.action2} >
 
-                        <TextInput
-                            placeholder="E-Mail"
-                            style={styles.textInput}
-                            autoCapitalize="none"
-                            onChangeText={(val) => textInputChange(val)}
-                            onEndEditing={(e)=>handleValidMail(e.nativeEvent.text)}
-                        />
-                        {data.check_textInputChange ?
-                            <Animatable.View
-                                animation="bounceIn"
-                            >
+                    <TextInput
+                        placeholder="E-mail"
+                        placeholderTextColor="#666666"
+                        style={[styles.textInput, {
+                            color: colors.text
+                        }]}
+                        autoCapitalize="none"
+                        onChangeText={(val) => textInputChange(val)}
+                        onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
+                    />
 
-                            </Animatable.View>
-                            : null}
-                    </View>
-                    { data.check_textInputChange ? null :
-                        <Animatable.View animation="fadeInLeft" duration={500}>
-                            <Text style={styles.errorMsg}>Please enter a valid mail</Text>
-                        </Animatable.View>
-                    }
-
-
-
-
-
-
+                </View>
+                { data.isValidUser ? null :
+                    <Animatable.View animation="fadeInLeft" duration={500}>
+                        <Text style={styles.errorMsg}>Mail invalide.</Text>
+                    </Animatable.View>
+                }
 
 
 
                         <TouchableOpacity
-                            style={{resizeMode: 'stretch',width : width*0.9,alignItems: 'center',height : height*0.13,flex:1}}
-                            onPress={() => {__doSignUp ( data )}}
+                            style={{resizeMode: 'stretch',width : width*0.9,alignItems: 'center',height : height*0.13}}
+                            onPress={() => {__doReset(data)}}
 
                         >
-                            <Image source={require('../assets/ForgotPassword/resetpassword.png')} style={{resizeMode: 'stretch',width : width*0.98,alignItems: 'center',height : height*0.13}}/>
+                            <Image source={require('../assets/ForgotPassword/resetpassword.png')}
+                                   style={{resizeMode: 'stretch',width : width*0.9,alignItems: 'center',height : height*0.13}}/>
 
                         </TouchableOpacity>
 

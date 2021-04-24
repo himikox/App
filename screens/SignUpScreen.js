@@ -26,6 +26,9 @@ import PhoneInput from "react-native-phone-number-input";
 import SignInScreen from './SignInScreen';
 import Realm from "realm";
 import {useTheme} from 'react-native-paper';
+
+
+
 const SignUpScreen = ({navigation}) => {
     const [value, setValue] = React.useState("");
     const [formattedValue, setFormattedValue] = React.useState("");
@@ -39,6 +42,8 @@ const SignUpScreen = ({navigation}) => {
         lastname:'',
         mail: '',
         password: '',
+        phone:'',
+        type:'',
         confirm_password: '',
         check_textInputChange: true,
         check_passwordInputChange: true,
