@@ -10,6 +10,7 @@ import DetailsScreen from './DetailsScreen';
 import ExploreScreen from './ExploreScreen';
 import ProfileScreen from './ProfileScreen';
 import {ImageBackground} from 'react-native';
+import FindDoctorScreen from './FindDoctorScreen';
 
 const HomeStack = createStackNavigator();
 const DetailsStack = createStackNavigator();
@@ -22,11 +23,7 @@ const MainTabScreen = () => (
       activeColor="#fff"
 
     >
-        <LinearGradient
-            colors={['#f5f5f5', '#DBDBDB']}
-            start={[1, 0]}
-            end={[0, 0]}
-        >
+
       <Tab.Screen
         name="Home"
         component={HomeStackScreen}
@@ -41,7 +38,7 @@ const MainTabScreen = () => (
 
 
 
-        </LinearGradient>
+
       <Tab.Screen
         name="Notifications"
         component={DetailsStackScreen}
@@ -69,6 +66,17 @@ const MainTabScreen = () => (
         component={ExploreScreen}
         options={{
           tabBarLabel: 'Explore',
+          tabBarColor: '#3b8abd',
+          tabBarIcon: ({ color }) => (
+            <Icon name="ios-aperture" color={color} size={26} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="FindDoctor"
+        component={FindDoctorScreen}
+        options={{
+          tabBarLabel: 'Find Doctor',
           tabBarColor: '#3b8abd',
           tabBarIcon: ({ color }) => (
             <Icon name="ios-aperture" color={color} size={26} />

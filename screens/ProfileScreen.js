@@ -25,7 +25,7 @@ function ProfileScreen() {
 
     const fetchUser=async()=>{
         firestore()
-            .collection('patient')
+            .collection('user')
             .doc(firebase.auth().currentUser.uid).get()
             .then(documentSnapshot => {
                 setUser({

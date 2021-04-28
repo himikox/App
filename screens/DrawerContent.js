@@ -23,33 +23,26 @@ import{ AuthContext } from '../components/context';
 import auth from '@react-native-firebase/auth';
 import {useState,useEffect} from 'react';
 export function DrawerContent({props,navigation}) {
-
     const [user, setUser] = React.useState({
 
-    firstname :'',
+        firstname :'',
         lastname : '',
         mail : '',
     });
+    firestore()
+        .collection('user')
+        .doc(firebase.auth().currentUser.uid).get()
+        .then(documentSnapshot => {
+            setUser({
+                ...user,
+                firstname : documentSnapshot.data()['name']['firstname'],
+                lastname : documentSnapshot.data()['name']['lastname'],
+                mail : documentSnapshot.data()['mail'],
 
-    const fetchUser=async()=>{
-        firestore()
-            .collection('patient')
-            .doc(firebase.auth().currentUser.uid).get()
-            .then(documentSnapshot => {
-                setUser({
-                    ...user,
-                    firstname : documentSnapshot.data()['firstname'],
-                    lastname : documentSnapshot.data()['lastname'],
-                    mail : documentSnapshot.data()['mail'],
-
-                });
-                //  user['firstname'] = documentSnapshot.data()['firstname'];
-                // console.log('data',user)
             });
-    }
-    useEffect(() => {
-        fetchUser();
-    }, [])
+            //  user['firstname'] = documentSnapshot.data()['firstname'];
+            // console.log('data',user)
+        });
     const paperTheme = useTheme();
 
    // const { signOut, toggleTheme } = React.useContext(AuthContext);
@@ -81,6 +74,17 @@ export function DrawerContent({props,navigation}) {
                     </View>
 
                     <Drawer.Section style={styles.drawerSection}>
+                        <DrawerItem
+                            icon={({color, size}) => (
+                                <Icon
+                                name="ios-home"
+                                color={color}
+                                size={size}
+                                />
+                            )}
+                            label="FindDoctor"
+                            onPress={() => {navigation.navigate('FindDoctorScreen')}}
+                        />
                         <DrawerItem
                             icon={({color, size}) => (
                                 <Icon

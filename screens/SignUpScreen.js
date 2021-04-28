@@ -27,9 +27,31 @@ import SignInScreen from './SignInScreen';
 import Realm from "realm";
 import {useTheme} from 'react-native-paper';
 
+//const { MongoClient } = require("mongodb");
+class patient {
+    static schema = {
+        name: "patient",
+        properties: {
+            FirstName: "string",
+            LastName: "string",
 
-
+        },
+    };
+    get patientName() {
+        return `${this.FirstName} ${this.LastName}`;
+    }
+}
 const SignUpScreen = ({navigation}) => {
+    const id = "doctorsina-ubkdy";
+    const config = {
+        id,
+    };
+
+    const app = new Realm.App(config);
+  // const mongodb = app.currentUser.mongoClient("mongodb-atlas");
+   // const users = mongodb.db("user").collection("patient");
+    const uri = "mongodb+srv://test:test@cluster0.yzjjl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+ //   const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     const [value, setValue] = React.useState("");
     const [formattedValue, setFormattedValue] = React.useState("");
     const [valid, setValid] = React.useState(false);
@@ -111,6 +133,24 @@ const SignUpScreen = ({navigation}) => {
                 ...data,
                 firstname: val,
                 check_FirstNameChange: false,
+                isValidUser: false
+
+            });
+        }
+    }
+    const PhoneNumberChange = (val) => {
+        if( val.trim().length == 8 ) {
+            setData({
+                ...data,
+                phone: val,
+         //       check_FirstNameChange: true,
+                isValidUser: true
+            });
+        } else {
+            setData({
+                ...data,
+                phone: val,
+             //   check_FirstNameChange: false,
                 isValidUser: false
 
             });
@@ -212,18 +252,50 @@ const SignUpScreen = ({navigation}) => {
               //      data.mail, data.password
              //   );
                     let response = await auth().createUserWithEmailAndPassword(data.mail, data.password)
-                    const us = auth().currentUser;
-                    let r = await us.sendEmailVerification();
+                const us = auth().currentUser;
+                //   let r = await us.sendEmailVerification();
+
+
+                if (response && response.user) {
+                    await  firestore()
+                        .collection('user')
+                        .doc(us.uid)
+                        .set({
+                            type: selectedValue.toLowerCase(),
+                            mail : data.mail,
+                            name : {
+                            firstname: data.firstname ,
+                            lastname : data.lastname},
+                            phone: data.phone
+                        })
+                        .then(() => {
+                            console.log('User added!');
+                        });
+                    // signUp(data.mail,'aa');
+                    Alert.alert("Success ✅", "Email Sent.")
+                }
+                //    const us = auth().currentUser;
+              //      let r = await us.sendEmailVerification();
             //    let response =  await app.emailPasswordAuth.registerUser(data.mail, data.password);
-                console.log(response);
-                    if (response ) {
-
-                                console.log('User added!');
 
 
-                        // signUp(data.mail,'aa');
-                        Alert.alert("Success ✅", "Email Sent.")
-                    }
+               //         const realm = await Realm.open({
+                 //           path: "user",
+                   //         schema: [patient],
+                    //    });
+               // console.log('mongodb_NOTdone');
+                 //       let patient1;
+                   //     realm.write(() => {
+                     //       patient1 = realm.create("patient", {
+                       //         FirstName: data.firstname,
+                         //       LastName : data.LastName,
+                           // });
+                       // });
+
+                       // console.log('mongodb_done');
+                        //console.log(patient1.FirstName);
+
+
              //   }
      //   else {
             //        Alert.alert("Error", "Please Enter a Valid mail")
@@ -354,15 +426,12 @@ const SignUpScreen = ({navigation}) => {
 
                       <PhoneInput
 
-                          defaultValue={value}
+
                           defaultCode="TN"
 
-                          onChangeText={(text) => {
-                              setValue(text);
-                          }}
-                          onChangeFormattedText={(text) => {
-                              setFormattedValue(text);
-                          }}
+                          onChangeText={(val) => PhoneNumberChange(val)}
+                          onEndEditing={(e)=> PhoneNumberChange(e.nativeEvent.text)}
+
                           textContainerStyle={{paddingVertical: 0,height:height*0.07,backgroundColor:'#fff'}}
                       />
                   </View>

@@ -14,6 +14,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useTheme } from '@react-navigation/native';
 import SplashScreen_Doctor from './SplashScreen_Doctor';
 import SplashScreen_Appointments from './SplashScreen_Appointments';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const SplashScreen_Medicine = ({navigation}) => {
     const { colors } = useTheme();
@@ -71,7 +72,10 @@ const SplashScreen_Medicine = ({navigation}) => {
 
 
             </Animatable.View>
+
+
         </View>
+
     );
 };
 

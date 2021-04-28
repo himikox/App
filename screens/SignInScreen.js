@@ -10,6 +10,7 @@ import {
     ScrollView,
     Alert, Image, Dimensions,CheckBox,
 } from 'react-native';
+import {GoogleSignin, statusCodes} from 'react-native-google-signin';
 import SplashScreen_Appointments from './SplashScreen_Appointments';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
@@ -24,6 +25,11 @@ import Users from '../model/users';
 import validator from 'validator';
 import Realm from "realm";
 import { LoginManager, AccessToken } from 'react-native-fbsdk';
+
+GoogleSignin.configure({
+    webClientId:
+        "1060583277364-quo1b67cbu3j8e9ds589s8ndp5338loq.apps.googleusercontent.com",
+});
 const SignInScreen = ({navigation}) => {
     console.log("i'm here1");
     const [isSelected, setSelection] = React.useState(false);
@@ -103,40 +109,39 @@ const SignInScreen = ({navigation}) => {
             });
         }
     }
+    const __onGoogleButtonPress = async()=> {
+        const { idToken } = await GoogleSignin.signIn();
+        const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+       let response= await auth().signInWithCredential(googleCredential);
+
+    }
     const __onFacebookButtonPress = async()=>{
+        LoginManager.logInWithPermissions(['public_profile', 'email'])
+            .then((result) => {
 
-        try {
-             let result =  await LoginManager.logInWithPermissions([
-                'public_profile',
-                'email',
-            ]);
-
-            if (result.isCancelled) {
-                throw 'User cancelled the login process';
-            }
-            let data =  await AccessToken.getCurrentAccessToken();
-
-            if (!data) {
-                throw 'Something went wrong obtaining access token';
-            }
-
-            const firebaseCredential = await auth.FacebookAuthProvider.credential(
-                data.accessToken,
-            );
-
-            const fbUserObj = await auth().signInWithCredential(firebaseCredential);
-
-        } catch (error) {
-            if (error.code === 'auth/account-exists-with-different-credential') {
-                Alert.alert('Email already registered');
-            } else if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-                Alert.alert('Sign in cancelled');
-            } else if (error.code === statusCodes.IN_PROGRESS) {
-                Alert.alert('Sign in is already in progress');
-            } else {
-                Alert.alert('Issue creating account', error.message);
-            }
-        }
+                if (result.isCancelled) {
+                    return Promise.reject(new Error('The user cancelled the request'));
+                }
+                // Retrieve the access token
+                return AccessToken.getCurrentAccessToken();
+            })
+            .then((data) => {
+                // Create a new Firebase credential with the token
+                const credential =auth.FacebookAuthProvider.credential(data.accessToken);
+                // Login with the credential
+                return auth().signInWithCredential(credential);
+            })
+            .then((user) => {
+                // If you need to do anything with the user, do it here
+                // The user will be logged in automatically by the
+                // `onAuthStateChanged` listener we set up in App.js earlier
+            })
+            .catch((error) => {
+                const { code, message } = error;
+                // For details of error codes, see the docs
+                // The message contains the default Firebase string
+                // representation of the error
+            });
 
     }
     const __doSingIn = async (data) => {
@@ -311,17 +316,17 @@ const SignInScreen = ({navigation}) => {
                          }}/>
                   </TouchableOpacity>
 
-                  <TouchableOpacity onPress={()=>navigation.navigate('SplashScreen_Appointments')}
+                  <TouchableOpacity onPress={()=>__onGoogleButtonPress()}
                                   >
                       <Image source={require('../assets/SignIn/google_button.png')} style={{
                           resizeMode: 'stretch',width : width*0.4,height : height*0.068,left:width*0.07}} />
                   </TouchableOpacity>
               </View>
               <View style={styles.textPrivate}>
-                  <Text style={styles.color_textPrivate}>
+                  <Text style={{color: 'grey'}}>
                       Don't Have Account ?
                   </Text>
-                  <Text style={ {fontWeight: 'bold',color:"#2d7ba7",fontSize:height*0.023}}
+                  <Text style={ {fontWeight: 'bold',color:"#2d7ba7"}}
                         onPress={()=>navigation.navigate('SignUpScreen')}>{" "} Create Account.</Text>
 
               </View>
@@ -363,11 +368,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         marginTop:height*0.07,
-
+        fontSize:height*0.023,
         left:width*0.03
     },
     color_textPrivate: {
-        color: 'grey',
+
         fontSize:height*0.023
     },
     footer: {

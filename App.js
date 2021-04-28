@@ -7,7 +7,7 @@
  */
 
 import React, { useState,useEffect } from 'react';
-import {View, ActivityIndicator, Alert} from 'react-native';
+import {View, ActivityIndicator, Alert, TouchableOpacity, Image, Dimensions} from 'react-native';
 import {
   NavigationContainer,
   DefaultTheme as NavigationDefaultTheme,
@@ -34,17 +34,23 @@ import { AuthContext } from './components/context';
 
 import RootStackScreen from './screens/RootStackScreen';
 
+
+
 import AsyncStorage from '@react-native-community/async-storage';
 import ProfileScreen from './screens/ProfileScreen';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {createStackNavigator} from '@react-navigation/stack';
 import HomeScreen from './screens/HomeScreen';
 import {LinearGradient} from 'react-native-svg';
+import FindDoctorScreen from './screens/FindDoctorScreen';
+import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
+
 const HomeStack = createStackNavigator();
 const DetailsStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
 const SettingsStack = createStackNavigator();
-
+const FindDoctorStack = createStackNavigator();
+const RootStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 function App ({route}) {
@@ -142,7 +148,13 @@ function App ({route}) {
           <NavigationContainer theme={theme}>
 
                     <Drawer.Navigator drawerContent={props => <DrawerContent {...props}  />}    >
+                        <Drawer.Screen name="MainTab" component={MainTabScreen} />
+
                       <Drawer.Screen name="HomeDrawer" component={HomeStackScreen}   />
+                      <Drawer.Screen name="FindDoctor" component={FindDoctorStackScreen}   />
+
+
+
                       <Drawer.Screen name="ProfileScreen" component={ProfileStackScreen} />
                       <Drawer.Screen name="DetailsScreen" component={DetailsStackScreen} />
                       <Drawer.Screen name="SettingsScreen" component={SettingsStackScreen} />
@@ -183,6 +195,24 @@ const   ProfileStackScreen = ({navigation}) => (
         )
       }} />
     </ProfileStack.Navigator>
+);
+const   FindDoctorStackScreen = ({navigation}) => (
+    <FindDoctorStack.Navigator screenOptions={{
+        headerStyle: {
+            backgroundColor: '#3b8abd',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize:25,
+        }
+    }}>
+        <DetailsStack.Screen name="Find Doctor" component={FindDoctorScreen} options={{
+            headerLeft: () => (
+                <Icon.Button name="ios-menu" size={40} backgroundColor="#3b8abd" onPress={() => navigation.openDrawer()}></Icon.Button>
+            )
+        }} />
+    </FindDoctorStack.Navigator>
 );
 const HomeStackScreen = ({navigation}) => (
     <HomeStack.Navigator screenOptions={{
@@ -240,3 +270,4 @@ const SettingsStackScreen = ({navigation}) => (
       }} />
     </SettingsStack.Navigator>
 );
+const {height} = Dimensions.get("screen");const {width} = Dimensions.get("screen");
