@@ -57,12 +57,14 @@ const SettingsScreen = () => {
         longitude: number;
     }
     const [location, setLocation] = React.useState(null);
+
     const [granted, setGranted] = React.useState(null);
     useEffect(
         () => {
             (() => findCoordinates())();
         }
     );
+
  useEffect(
         () => {
           if(granted===PermissionsAndroid.RESULTS.GRANTED){
@@ -114,20 +116,6 @@ const SettingsScreen = () => {
 
 
     };
-  const getInitialState=()=> {
-        return {
-            region: {
-                latitude: 37.78825,
-                longitude: -122.4324,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-            },
-        };
-    }
-
-   const onRegionChange=(region) =>{
-        this.setState({ region });
-    }
 
     return (
         <View style={styles.container}>

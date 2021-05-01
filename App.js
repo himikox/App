@@ -23,7 +23,7 @@ import {
 
 import { DrawerContent } from './screens/DrawerContent';
 import DetailsScreen from './screens/DetailsScreen';
-
+import firestore from '@react-native-firebase/firestore';
 
 import MainTabScreen from './screens/MainTabScreen';
 import SupportScreen from './screens/SupportScreen';
@@ -33,7 +33,7 @@ import BookmarkScreen from './screens/BookmarkScreen';
 import { AuthContext } from './components/context';
 
 import RootStackScreen from './screens/RootStackScreen';
-
+import DoctorInformationScreen from './screens/DoctorInformationScreen';
 
 
 import AsyncStorage from '@react-native-community/async-storage';
@@ -58,7 +58,7 @@ function App ({route}) {
   // const [userToken, setUserToken] = React.useState(null);
 
   const [isDarkTheme, setIsDarkTheme] = React.useState(false);
-
+    const Stack = createStackNavigator()
   const initialLoginState = {
     isLoading: true,
     userName: null,
@@ -93,7 +93,13 @@ function App ({route}) {
   const theme = isDarkTheme ? CustomDarkTheme : CustomDefaultTheme;
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
-
+    const [utilisateur, setUtilisateur] = useState({
+        firstname :'',
+        lastname : '',
+        mail : '',
+        phone:'',
+        type:''
+    });
 
 
       const toggleTheme= () => {
@@ -101,7 +107,15 @@ function App ({route}) {
     }
 
 
+    useEffect(() => {
 
+
+
+
+
+
+        // unsubscribe on unmount
+    }, [user]);
 
 
   function onAuthStateChanged(user) {
@@ -115,6 +129,26 @@ function App ({route}) {
     useEffect(() => {
 
           const subscriber = auth().onAuthStateChanged(onAuthStateChanged)
+        if(user)
+        {
+            firestore()
+                .collection('user')
+                .doc(auth().currentUser.uid).get()
+                .then(documentSnapshot => {
+                    setUtilisateur({
+                        ...utilisateur,
+                        firstname : documentSnapshot.data()['name']['firstname'],
+                        lastname : documentSnapshot.data()['name']['lastname'],
+                        mail : documentSnapshot.data()['mail'],
+                        type : documentSnapshot.data()['type'],
+
+                    });
+
+                    //  user['firstname'] = documentSnapshot.data()['firstname'];
+                    // console.log('data',user)
+                });
+
+        }
           return subscriber;
 
 
@@ -140,31 +174,53 @@ function App ({route}) {
         </PaperProvider>
     );
   }
-  console.log("user");
-  return (
 
-      <PaperProvider theme={theme}>
+    console.log("user is ",utilisateur.type);
 
-          <NavigationContainer theme={theme}>
-
-                    <Drawer.Navigator drawerContent={props => <DrawerContent {...props}  />}    >
-                        <Drawer.Screen name="MainTab" component={MainTabScreen} />
-
-                      <Drawer.Screen name="HomeDrawer" component={HomeStackScreen}   />
-                      <Drawer.Screen name="FindDoctor" component={FindDoctorStackScreen}   />
+      console.log("user connected");
 
 
 
-                      <Drawer.Screen name="ProfileScreen" component={ProfileStackScreen} />
-                      <Drawer.Screen name="DetailsScreen" component={DetailsStackScreen} />
-                      <Drawer.Screen name="SettingsScreen" component={SettingsStackScreen} />
 
-                    </Drawer.Navigator>
 
-          </NavigationContainer>
+          return (
 
-      </PaperProvider>
-  );
+              <PaperProvider theme={theme}>
+
+                  <NavigationContainer theme={theme}>
+                      {utilisateur.type === 'patient' &&
+
+
+                      <Drawer.Navigator drawerContent={props => <DrawerContent {...props}  />}>
+                          <Drawer.Screen name="MainTab" component={MainTabScreen}/>
+
+                          <Drawer.Screen name="HomeDrawer" component={HomeStackScreen}/>
+                          <Drawer.Screen name="FindDoctor" component={FindDoctorStackScreen}/>
+
+
+                          <Drawer.Screen name="ProfileScreen" component={ProfileStackScreen}/>
+                          <Drawer.Screen name="DetailsScreen" component={DetailsStackScreen}/>
+                          <Drawer.Screen name="SettingsScreen" component={SettingsStackScreen}/>
+
+                      </Drawer.Navigator>
+                      }
+                      {utilisateur.type === 'doctor' &&
+                      <Drawer.Navigator drawerContent={props => <DrawerContent {...props}  />} initialRouteName="Form">
+                          <Stack.Screen name="Form" component={DoctorInformationScreen} />
+
+
+                      </Drawer.Navigator>
+
+
+                      }
+                  </NavigationContainer>
+
+              </PaperProvider>
+          );
+
+
+
+
 }
 
 export default App;

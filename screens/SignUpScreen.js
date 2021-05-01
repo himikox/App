@@ -327,7 +327,7 @@ const SignUpScreen = ({navigation}) => {
 
     return (
       <View style={styles.container}>
-
+{}
               <StatusBar backgroundColor='#fff' barStyle="dark-content"/>
           <ScrollView >
 
@@ -448,6 +448,7 @@ const SignUpScreen = ({navigation}) => {
                     onChangeText={(val) => handlePasswordChange(val)}
                     onEndEditing={(e)=>handlePasswordChange(e.nativeEvent.text)}
                 />
+
                 <TouchableOpacity
                     onPress={updateSecureTextEntry}
                     style={{marginTop:15}}
