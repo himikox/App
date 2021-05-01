@@ -25,7 +25,7 @@ const SplashScreen_Doctor = ({navigation}) => {
 
                 <Animatable.Image
                     animation="bounceIn"
-                    duraton="1500"
+                    duration="1500"
                     source={require('../assets/Doctors.png')}
                     style={styles.logo}
                     resizeMode="stretch"

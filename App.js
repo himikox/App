@@ -15,16 +15,17 @@ import {
 } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import auth,{ firebase }  from "@react-native-firebase/auth"
+
 import {
   Provider as PaperProvider,
   DefaultTheme as PaperDefaultTheme,
   DarkTheme as PaperDarkTheme
 } from 'react-native-paper';
-
+import Header from 'react-native-elements'
 import { DrawerContent } from './screens/DrawerContent';
 import DetailsScreen from './screens/DetailsScreen';
-
-
+import firestore from '@react-native-firebase/firestore';
+import ChooseDoctorScreen from './screens/ChooseDoctorScreen';
 import MainTabScreen from './screens/MainTabScreen';
 import SupportScreen from './screens/SupportScreen';
 import SettingsScreen from './screens/SettingsScreen';
@@ -33,9 +34,9 @@ import BookmarkScreen from './screens/BookmarkScreen';
 import { AuthContext } from './components/context';
 
 import RootStackScreen from './screens/RootStackScreen';
+import DoctorInformationScreen from './screens/DoctorInformationScreen';
 
-
-
+import DoctorProfileScreen from './screens/DoctorProfileScreen'
 import AsyncStorage from '@react-native-community/async-storage';
 import ProfileScreen from './screens/ProfileScreen';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -58,7 +59,7 @@ function App ({route}) {
   // const [userToken, setUserToken] = React.useState(null);
 
   const [isDarkTheme, setIsDarkTheme] = React.useState(false);
-
+    const Stack = createStackNavigator()
   const initialLoginState = {
     isLoading: true,
     userName: null,
@@ -93,7 +94,13 @@ function App ({route}) {
   const theme = isDarkTheme ? CustomDarkTheme : CustomDefaultTheme;
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
-
+    const [utilisateur, setUtilisateur] = useState({
+        firstname :'',
+        lastname : '',
+        mail : '',
+        phone:'',
+        type:''
+    });
 
 
       const toggleTheme= () => {
@@ -101,7 +108,34 @@ function App ({route}) {
     }
 
 
+    useEffect(() => {
 
+
+        if(user)
+        {
+            firestore()
+                .collection('user')
+                .doc(auth().currentUser.uid).get()
+                .then(documentSnapshot => {
+                    setUtilisateur({
+                        ...utilisateur,
+                        firstname : documentSnapshot.data()['name']['firstname'],
+                        lastname : documentSnapshot.data()['name']['lastname'],
+                        mail : documentSnapshot.data()['mail'],
+                        type : documentSnapshot.data()['type'],
+
+                    });
+
+                    //  user['firstname'] = documentSnapshot.data()['firstname'];
+                    // console.log('data',user)
+                });
+
+        }
+
+
+
+        // unsubscribe on unmount
+    }, [user]);
 
 
   function onAuthStateChanged(user) {
@@ -115,13 +149,14 @@ function App ({route}) {
     useEffect(() => {
 
           const subscriber = auth().onAuthStateChanged(onAuthStateChanged)
+
           return subscriber;
 
 
 
 
         // unsubscribe on unmount
-    }, []);
+    }, [user]);
 
 
 
@@ -140,31 +175,53 @@ function App ({route}) {
         </PaperProvider>
     );
   }
-  console.log("user");
-  return (
 
-      <PaperProvider theme={theme}>
+    console.log("user is ",utilisateur.type);
 
-          <NavigationContainer theme={theme}>
-
-                    <Drawer.Navigator drawerContent={props => <DrawerContent {...props}  />}    >
-                        <Drawer.Screen name="MainTab" component={MainTabScreen} />
-
-                      <Drawer.Screen name="HomeDrawer" component={HomeStackScreen}   />
-                      <Drawer.Screen name="FindDoctor" component={FindDoctorStackScreen}   />
+      console.log("user connected");
 
 
 
-                      <Drawer.Screen name="ProfileScreen" component={ProfileStackScreen} />
-                      <Drawer.Screen name="DetailsScreen" component={DetailsStackScreen} />
-                      <Drawer.Screen name="SettingsScreen" component={SettingsStackScreen} />
 
-                    </Drawer.Navigator>
 
-          </NavigationContainer>
+          return (
 
-      </PaperProvider>
-  );
+              <PaperProvider theme={theme}>
+
+                  <NavigationContainer theme={theme}>
+                      {utilisateur.type === 'patient' &&
+
+
+                      <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
+
+
+                          <Drawer.Screen name="HomeDrawer" component={HomeStackScreen}/>
+
+
+
+                          <Drawer.Screen name="ProfileScreen" component={ProfileStackScreen}/>
+                          <Drawer.Screen name="DetailsScreen" component={DetailsStackScreen}/>
+
+
+                      </Drawer.Navigator>
+                      }
+                      {utilisateur.type === 'doctor' &&
+                          <Stack.Navigator headerMode='none'>
+                              <Stack.Screen name="Form" component={DoctorInformationScreen} />
+
+                          </Stack.Navigator>
+
+
+
+                      }
+                  </NavigationContainer>
+
+              </PaperProvider>
+          );
+
+
+
+
 }
 
 export default App;
@@ -178,6 +235,23 @@ const GradientHeader = props => (
         </LinearGradient>
     </View>
 )
+const   DrawerStackScreen = ({navigation}) => (
+    <Drawer.Navigator drawerContent={props => <DrawerContent {...props}  />} initialRouteName="Form">
+
+        <Drawer.Screen name="MainTab" component={MainTabScreen}/>
+
+        <Drawer.Screen name="HomeDrawer" component={HomeStackScreen}/>
+
+
+
+        <Drawer.Screen name="ProfileScreen" component={ProfileStackScreen}/>
+        <Drawer.Screen name="DetailsScreen" component={DetailsStackScreen}/>
+
+
+    </Drawer.Navigator>
+);
+
+
 const   ProfileStackScreen = ({navigation}) => (
     <ProfileStack.Navigator screenOptions={{
       headerStyle: {
@@ -196,30 +270,16 @@ const   ProfileStackScreen = ({navigation}) => (
       }} />
     </ProfileStack.Navigator>
 );
-const   FindDoctorStackScreen = ({navigation}) => (
-    <FindDoctorStack.Navigator screenOptions={{
-        headerStyle: {
-            backgroundColor: '#3b8abd',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-            fontWeight: 'bold',
-            fontSize:25,
-        }
-    }}>
-        <DetailsStack.Screen name="Find Doctor" component={FindDoctorScreen} options={{
-            headerLeft: () => (
-                <Icon.Button name="ios-menu" size={40} backgroundColor="#3b8abd" onPress={() => navigation.openDrawer()}></Icon.Button>
-            )
-        }} />
-    </FindDoctorStack.Navigator>
+const ImageHeader = props => (
+    <View style={{ backgroundColor: '#eee' }}>
+        <Image source={require('./assets/header.png')} />
+        <Header {...props} style={{ backgroundColor: 'transparent' }}/>
+    </View>
 );
 const HomeStackScreen = ({navigation}) => (
     <HomeStack.Navigator screenOptions={{
-      headerStyle: {
-        backgroundColor: ('#3b8abd'),
 
-      },
+        headerTransparent: true,
       headerTintColor: '#fff',
       headerTitleStyle: {
         fontWeight: 'bold',
@@ -228,10 +288,30 @@ const HomeStackScreen = ({navigation}) => (
     }}>
       <HomeStack.Screen name="Home" component={HomeScreen} options={{
         title:'Home',
+
         headerLeft: () => (
-            <Icon.Button name="ios-menu" size={40} backgroundColor="#3b8abd" onPress={() => navigation.openDrawer()}></Icon.Button>
+            <Icon.Button name="ios-menu" size={40} backgroundColor="transparent" onPress={() => navigation.openDrawer()}></Icon.Button>
         )
       }} />
+
+        <HomeStack.Screen name="FindDoctorScreen" component={FindDoctorScreen} options={{
+            title:'Doctor',
+            headerLeft: () => (
+                <Icon.Button name="ios-arrow-back" size={40} backgroundColor="transparent" onPress={() => navigation.goBack()} ></Icon.Button>
+            )
+        }} />
+        <HomeStack.Screen name="ChooseDoctorScreen" component={ChooseDoctorScreen} options={{
+            title:'Doctor',
+            headerLeft: () => (
+                <Icon.Button name="ios-arrow-back" size={40} backgroundColor="transparent" onPress={() => navigation.goBack()} ></Icon.Button>
+            )
+        }} />
+        <HomeStack.Screen name="DoctorProfileScreen" component={DoctorProfileScreen} options={{
+            title:'Doctor',
+            headerLeft: () => (
+                <Icon.Button name="ios-arrow-back" size={40} backgroundColor="transparent" onPress={() => navigation.goBack()} ></Icon.Button>
+            )
+        }} />
     </HomeStack.Navigator>
 );
 const DetailsStackScreen = ({navigation}) => (

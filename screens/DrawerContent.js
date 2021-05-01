@@ -22,6 +22,10 @@ import { firebase }  from "@react-native-firebase/auth"
 import{ AuthContext } from '../components/context';
 import auth from '@react-native-firebase/auth';
 import {useState,useEffect} from 'react';
+import HomeScreen from './HomeScreen';
+import FindDoctorScreen from './FindDoctorScreen';
+import {createStackNavigator} from '@react-navigation/stack';
+const HomeStack = createStackNavigator();
 export function DrawerContent({props,navigation}) {
     const [user, setUser] = React.useState({
 
@@ -29,6 +33,7 @@ export function DrawerContent({props,navigation}) {
         lastname : '',
         mail : '',
     });
+
     firestore()
         .collection('user')
         .doc(firebase.auth().currentUser.uid).get()
@@ -74,17 +79,7 @@ export function DrawerContent({props,navigation}) {
                     </View>
 
                     <Drawer.Section style={styles.drawerSection}>
-                        <DrawerItem
-                            icon={({color, size}) => (
-                                <Icon
-                                name="ios-home"
-                                color={color}
-                                size={size}
-                                />
-                            )}
-                            label="FindDoctor"
-                            onPress={() => {navigation.navigate('FindDoctorScreen')}}
-                        />
+
                         <DrawerItem
                             icon={({color, size}) => (
                                 <Icon
@@ -159,6 +154,7 @@ export function DrawerContent({props,navigation}) {
 const styles = StyleSheet.create({
     drawerContent: {
       flex: 1,
+
     },
     userInfoSection: {
       paddingLeft: 20,
@@ -202,3 +198,29 @@ const styles = StyleSheet.create({
       paddingHorizontal: 16,
     },
   })
+const HomeStackScreen = ({navigation}) => (
+    <HomeStack.Navigator screenOptions={{
+
+        headerTransparent: true,
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize:25,
+        }
+    }}>
+        <HomeStack.Screen name="Home" component={HomeScreen} options={{
+            title:'Home',
+
+            headerLeft: () => (
+                <Icon.Button name="ios-menu" size={40} backgroundColor="transparent" onPress={() => navigation.openDrawer()}></Icon.Button>
+            )
+        }} />
+
+        <HomeStack.Screen name="FindDoctorScreen" component={FindDoctorScreen} options={{
+            title:'FindDoctor',
+            headerLeft: () => (
+                <Icon.Button name="ios-menu" size={40} backgroundColor="transparent" onPress={() => navigation.goBack()} ></Icon.Button>
+            )
+        }} />
+    </HomeStack.Navigator>
+);
